@@ -1,0 +1,17 @@
+Source: mx-package-manager
+Section: admin
+Priority: optional
+Maintainer: Steven Pusser (Stevo) <maintainer@mepiscommunity.org>
+Build-Depends: qt5-qmake,
+	debhelper (>=7.0.50~)
+Standards-Version: 3.9.5
+Vcs-Git: git://github.com/AdrianTM/mx-package-manager
+
+Package: mx-package-manager
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, mx-viewer
+Description: MX Package Manager
+ MX Package Manager is a tool used for managing package on MX Linux
+ - installs popular programs from different sources
+ - installs programs from the MX Test repo
+ - installs programs from Debian Backports repo

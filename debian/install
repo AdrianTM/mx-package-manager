@@ -1,0 +1,6 @@
+mx-package-manager 		usr/bin
+mx-package-manager.desktop 	usr/share/applications/mx
+translations/*.qm 		usr/share/mx-package-manager/locale
+mx-package-manager.png		usr/share/pixmaps
+license.html            	usr/share/doc/mx-package-manager
+

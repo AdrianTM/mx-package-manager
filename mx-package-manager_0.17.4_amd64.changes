@@ -1,0 +1,43 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Format: 1.8
+Date: Sun, 02 Apr 2017 13:09:06 -0400
+Source: mx-package-manager
+Binary: mx-package-manager
+Architecture: source amd64
+Version: 0.17.4
+Distribution: mx
+Urgency: medium
+Maintainer: Steven Pusser (Stevo) <maintainer@mepiscommunity.org>
+Changed-By: Adrian <adrian@mxlinux.org>
+Description:
+ mx-package-manager - MX Package Manager
+Changes:
+ mx-package-manager (0.17.4) mx; urgency=medium
+ .
+   * initial release
+Checksums-Sha1:
+ 866ededf7c7624b0561cf4f68fad862e049def74 1189 mx-package-manager_0.17.4.dsc
+ 9346392a08d96ef6a93ee5b13d6a50efd8d02c3e 102080 mx-package-manager_0.17.4.tar.xz
+ a8d7c86251185aa7262af26e40098edf5baec002 48774 mx-package-manager_0.17.4_amd64.deb
+Checksums-Sha256:
+ 5ddff6b4226ef773de49387acfe8bd64e7f92da9d770ad452eab8a966630679d 1189 mx-package-manager_0.17.4.dsc
+ cea5b0deb9dc03163d4ef14c4f8c981a2047b342aaf8fddca05de575fa0ab653 102080 mx-package-manager_0.17.4.tar.xz
+ a705fbe6b3e549425c107159fb4a1583f9116773e2a2b39266c7d7aa18e75bf1 48774 mx-package-manager_0.17.4_amd64.deb
+Files:
+ 657d370a6b4676614f7d7b98170c2c07 1189 admin optional mx-package-manager_0.17.4.dsc
+ 915c5684285418700e8db8c6bd89c1f0 102080 admin optional mx-package-manager_0.17.4.tar.xz
+ bab1aa0eebe0b58ecd995a0a3770b4e3 48774 admin optional mx-package-manager_0.17.4_amd64.deb
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQEcBAEBAgAGBQJY4wV5AAoJEHCTjHgGee6YjKIIALEwk3joTK3aM1mG/QZ1GGjO
+6sMqw1ZeipzHCWnusrymdKIzG/TRdn+zk1MjdaVmEY4LjkqGboytWgjMY9h+Fx6i
+TUEcoKzLK/d4dKGDdBGulZODrIVPuqFtLLkXKoJHJU5Q2ThEhadONPjbT5SvZSmc
+XDRKvrUzzNAecM8rhV8vs3brteZVDb0hv49ForYCsScQzgI34OV5TId7aca6pNBW
+Dj/0JkjA4PJeybSpNzaD67M+KCSZFcjT2ifM/zfxL/vQWXnd3M5gbHUmHFsvcZTk
+myaO2m6/2b0nKDYUy8t0vp9JfitzysRyOTiDZAZYntWfM5WkoT0td0ckeesfJjY=
+=3NaP
+-----END PGP SIGNATURE-----
