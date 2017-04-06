@@ -75,9 +75,9 @@ void MainWindow::setup()
 void MainWindow::uninstall(const QString &names)
 {
     this->hide();
-    lock_file->unlock();    
+    lock_file->unlock();
     cmd->run("x-terminal-emulator -e apt-get remove " + names);
-    refreshPopularApps();    
+    refreshPopularApps();
     this->show();
 }
 
@@ -204,6 +204,7 @@ void MainWindow::processDoc(const QDomDocument &doc)
 // Reloadn and refresh interface
 void MainWindow::refreshPopularApps()
 {
+    lock_file->lock();
     ui->treeWidget->clear();
     ui->buttonInstall->setEnabled(false);
     ui->buttonUninstall->setEnabled(false);
@@ -347,6 +348,7 @@ void MainWindow::cleanup()
     if(!cmd->terminate()) {
         cmd->kill();
     }
+    lock_file->unlock();
 }
 
 // When the search is done
