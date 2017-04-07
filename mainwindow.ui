@@ -95,16 +95,6 @@
          </column>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QCheckBox" name="yesCheckBox">
-         <property name="text">
-          <string>Use option --yes for apt-get install</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="2">
         <widget class="QLineEdit" name="searchPopular">
          <property name="placeholderText">
@@ -352,7 +342,9 @@
         <string>Uninstall</string>
        </property>
        <property name="icon">
-        <iconset theme="archive-remove"/>
+        <iconset theme="archive-remove">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -368,7 +360,6 @@
   <tabstop>buttonHelp</tabstop>
   <tabstop>buttonInstall</tabstop>
   <tabstop>buttonCancel</tabstop>
-  <tabstop>yesCheckBox</tabstop>
  </tabstops>
  <resources>
   <include location="images.qrc"/>
