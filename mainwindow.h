@@ -53,7 +53,7 @@ public:
 
     QString version;
 
-    bool checkInstalled(const QString &names);    
+    bool checkInstalled(const QString &names);
 
     void displayPopularApps();
     void installPopularApp(const QString &name);
@@ -62,7 +62,7 @@ public:
     void processDoc(const QDomDocument &doc);
     void refreshPopularApps();
     void setProgressDialog();
-    void setup();    
+    void setup();
     void uninstall(const QString &names);
     void update();
 
@@ -76,7 +76,7 @@ private slots:
     void cleanup();
     void closeSearch();
     void cmdStart();
-    void cmdDone();      
+    void cmdDone();
     void displayInfo(QTreeWidgetItem* item, int column);
     void findPackage();
     void setConnections();

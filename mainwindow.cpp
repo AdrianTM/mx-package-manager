@@ -68,7 +68,7 @@ void MainWindow::setup()
     loadPmFiles();
     displayPopularApps();
     connect(ui->searchPopular,&QLineEdit::textChanged, this, &MainWindow::findPackage);
-
+    ui->searchPopular->setFocus();
 }
 
 // Uninstall listed packages
@@ -419,7 +419,24 @@ void MainWindow::displayInfo(QTreeWidgetItem *item, int column)
 // Find package in view
 void MainWindow::findPackage()
 {
-    qDebug() << "find";
+    QString word = ui->searchPopular->text();
+    if (word == "") {
+        ui->treeWidget->reset();
+        return;
+    }
+    QList<QTreeWidgetItem *> found_items = ui->treeWidget->findItems(word, Qt::MatchContains|Qt::MatchRecursive, 2);
+    QTreeWidgetItemIterator it(ui->treeWidget);
+    while (*it) {
+        if ((*it)->childCount() == 0) { // if child
+            if (found_items.contains(*it)) {
+                (*it)->parent()->setExpanded(true);
+                (*it)->setHidden(false);
+            } else {
+                (*it)->setHidden(true);
+            }
+        }
+        ++it;
+    }
 }
 
 // Install button clicked
