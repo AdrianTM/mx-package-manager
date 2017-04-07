@@ -305,16 +305,20 @@ void MainWindow::installPopularApp(const QString &name)
     }
     setConnections();
     progress->setLabelText(tr("Pre-processing for ") + name);
-    cmd->run("x-terminal-emulator -e " + preinstall);
+    cmd->run(preinstall);
 
     if (install_names != "") {
+        progress->hide();
+        this->hide();
         setConnections();
         progress->setLabelText(tr("Installing ") + name);
         cmd->run("x-terminal-emulator -e apt-get install " + install_names);
+        this->show();
+        progress->show();
     }
     setConnections();
     progress->setLabelText(tr("Post-processing for ") + name);
-    cmd->run("x-terminal-emulator -e " + postinstall);
+    cmd->run(postinstall);
     progress->hide();
 }
 
