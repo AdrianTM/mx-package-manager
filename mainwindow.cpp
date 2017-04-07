@@ -310,7 +310,7 @@ void MainWindow::installPopularApp(const QString &name)
     if (install_names != "") {
         setConnections();
         progress->setLabelText(tr("Installing ") + name);
-        cmd->run("x-terminal-emulator -e apt-get install" + install_names);
+        cmd->run("x-terminal-emulator -e apt-get install " + install_names);
     }
     setConnections();
     progress->setLabelText(tr("Post-processing for ") + name);
