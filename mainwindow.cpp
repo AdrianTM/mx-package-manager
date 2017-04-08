@@ -31,6 +31,7 @@
 #include <QTextStream>
 #include <QtXml/QtXml>
 #include <QProgressBar>
+#include <QToolTip>
 
 #include <QDebug>
 
@@ -275,6 +276,9 @@ void MainWindow::displayPopularApps()
         // add uninstall_names (not displayed)
         childItem->setText(6, uninstall_names);
 
+        // add screenshot url (not displayed)
+        childItem->setText(7, screenshot);
+
         // gray out installed items
         if (checkInstalled(uninstall_names)) {
             childItem->setForeground(2, QBrush(Qt::gray));
@@ -375,7 +379,7 @@ bool MainWindow::checkInstalled(const QString &names)
     if (names == "") {
         return false;
     }
-    foreach(QString name, names.split(" ")) {
+    foreach(QString name, names.split("\n")) {
         if (!installedPackages.contains(name)) {
             return false;
         }
@@ -411,8 +415,14 @@ void MainWindow::displayInfo(QTreeWidgetItem *item, int column)
         QString desc = item->text(4);
         QString install_names = item->text(5);
         QString title = item->text(2);
-        QString msg = "<b>" + title + "</b><p>" + desc + "<p>" + tr("Packages to be installed: ") + install_names;
-        QMessageBox::information(this, tr("Info"), msg, tr("Cancel"));
+        QString msg = "<b>" + title + "</b><p>" + desc + "<p>" ;
+        if (install_names != 0) {
+            msg += tr("Packages to be installed: ") + install_names;
+        }
+        QString screenshot = item->text(7);
+
+        QToolTip::showText(QCursor::pos(), "<img src=':icons/icons/logo.png'>" + msg, this, QRect(), 5000);
+        //QMessageBox info(QMessageBox::Information, tr("Package info") , msg + "<img src=" + screenshot + ">", QMessageBox::Close, this);
     }
 }
 
@@ -482,6 +492,7 @@ void MainWindow::on_treeWidget_expanded()
     ui->treeWidget->resizeColumnToContents(4);
 }
 
+// Tree item clicked
 void MainWindow::on_treeWidget_itemClicked()
 {
     bool checked = false;
@@ -506,6 +517,7 @@ void MainWindow::on_treeWidget_itemClicked()
    }
 }
 
+// Tree item expanded
 void MainWindow::on_treeWidget_itemExpanded()
 {
     QTreeWidgetItemIterator it(ui->treeWidget);
@@ -518,6 +530,7 @@ void MainWindow::on_treeWidget_itemExpanded()
     ui->treeWidget->resizeColumnToContents(4);
 }
 
+// Tree item collapsed
 void MainWindow::on_treeWidget_itemCollapsed()
 {
     QTreeWidgetItemIterator it(ui->treeWidget);
@@ -531,6 +544,7 @@ void MainWindow::on_treeWidget_itemCollapsed()
 }
 
 
+// Uninstall clicked
 void MainWindow::on_buttonUninstall_clicked()
 {
     QString names;
