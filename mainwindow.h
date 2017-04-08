@@ -34,6 +34,7 @@
 #include <QDomDocument>
 #include <QProgressDialog>
 #include <QTreeWidgetItem>
+//#include <QNetworkReply>
 
 #include <cmd.h>
 #include <lockfile.h>
@@ -56,6 +57,7 @@ public:
     bool checkInstalled(const QString &names);
 
     void displayPopularApps();
+    void downloadImage(const QUrl &url);
     void installPopularApp(const QString &name);
     void installPopularApps();
     void loadPmFiles();
@@ -81,7 +83,6 @@ private slots:
     void findPackage();
     void setConnections();
     void tock(int, int); // tick-tock, updates progressBar when tick signal is emited
-    //void updateOutput(const QString &line);
 
     void on_buttonInstall_clicked();
     void on_buttonAbout_clicked();

@@ -31,7 +31,12 @@
 #include <QTextStream>
 #include <QtXml/QtXml>
 #include <QProgressBar>
+
 #include <QToolTip>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QImageReader>
+
 
 #include <QDebug>
 
@@ -419,10 +424,44 @@ void MainWindow::displayInfo(QTreeWidgetItem *item, int column)
         if (install_names != 0) {
             msg += tr("Packages to be installed: ") + install_names;
         }
-        QString screenshot = item->text(7);
+        QUrl url = item->text(7); // screenshot url
 
-        QToolTip::showText(QCursor::pos(), "<img src=':icons/icons/logo.png'>" + msg, this, QRect(), 5000);
-        //QMessageBox info(QMessageBox::Information, tr("Package info") , msg + "<img src=" + screenshot + ">", QMessageBox::Close, this);
+        if (!url.isValid() || url.isEmpty() || url.url() == "none") {
+            qDebug() << "no screenshot for: " << title;
+        } else {
+            QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+            QNetworkReply* reply = manager->get(QNetworkRequest(url));
+
+            QEventLoop loop;
+            connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+            timer->start(5000);
+            connect(timer, &QTimer::timeout, &loop, &QEventLoop::quit);
+            ui->treeWidget->blockSignals(true);
+            loop.exec();
+            timer->stop();
+            ui->treeWidget->blockSignals(false);
+
+            if (reply->error())
+            {
+                qDebug() << "Download of " << url.url() << " failed: " << qPrintable(reply->errorString());
+            } else {
+                QImage image;
+                QByteArray data;
+                QBuffer buffer(&data);
+                QImageReader imageReader(reply);
+                image = imageReader.read();
+                if (imageReader.error()) {
+                    qDebug() << "loading screenshot: " << imageReader.errorString();
+                } else {
+                    image = image.scaled(QSize(200,300), Qt::KeepAspectRatioByExpanding);
+                    image.save(&buffer, "PNG");
+                    msg = QString(msg + "<p><img src='data:image/png;base64, %0'>").arg(QString(data.toBase64()));
+                }
+            }
+        }
+
+        QMessageBox info(QMessageBox::NoIcon, tr("Package info") , msg, QMessageBox::Close, this);
+        info.exec();
     }
 }
 
@@ -507,14 +546,14 @@ void MainWindow::on_treeWidget_itemClicked()
             }
         }
         ++it;
-   }
-   ui->buttonInstall->setEnabled(checked);
-   ui->buttonUninstall->setEnabled(checked && installed);
-   if (checked && installed) {
-       ui->buttonInstall->setText(tr("Reinstall"));
-   } else {
-       ui->buttonInstall->setText(tr("Install"));
-   }
+    }
+    ui->buttonInstall->setEnabled(checked);
+    ui->buttonUninstall->setEnabled(checked && installed);
+    if (checked && installed) {
+        ui->buttonInstall->setText(tr("Reinstall"));
+    } else {
+        ui->buttonInstall->setText(tr("Install"));
+    }
 }
 
 // Tree item expanded
