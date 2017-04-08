@@ -455,7 +455,7 @@ void MainWindow::displayInfo(QTreeWidgetItem *item, int column)
                 } else {
                     image = image.scaled(QSize(200,300), Qt::KeepAspectRatioByExpanding);
                     image.save(&buffer, "PNG");
-                    msg = QString(msg + "<p><img src='data:image/png;base64, %0'>").arg(QString(data.toBase64()));
+                    msg += QString("<p><img src='data:image/png;base64, %0'>").arg(QString(data.toBase64()));
                 }
             }
         }
