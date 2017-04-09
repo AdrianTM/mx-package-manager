@@ -4,6 +4,7 @@
  * Copyright (C) 2017 MX Authors
  *
  * Authors: Adrian
+ *          Dolphin_Oracle
  *          MX Linux <http://mxlinux.org>
  *
  * This file is part of mx-package-manager.
@@ -34,7 +35,6 @@
 #include <QDomDocument>
 #include <QProgressDialog>
 #include <QTreeWidgetItem>
-//#include <QNetworkReply>
 
 #include <cmd.h>
 #include <lockfile.h>
@@ -55,7 +55,7 @@ public:
     QString version;
 
     bool checkInstalled(const QString &names);
-
+    bool checkOnline();
     void displayPopularApps();
     void downloadImage(const QUrl &url);
     void installPopularApp(const QString &name);

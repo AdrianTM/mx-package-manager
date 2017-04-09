@@ -9,7 +9,7 @@ Vcs-Git: git://github.com/AdrianTM/mx-package-manager
 
 Package: mx-package-manager
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, mx-viewer, mx-package-manager-pkglist
+Depends: ${misc:Depends}, ${shlibs:Depends}, mx-viewer, mx-package-manager-pkglist, menu, wget
 Description: MX Package Manager
  MX Package Manager is a tool used for managing package on MX Linux
  - installs popular programs from different sources

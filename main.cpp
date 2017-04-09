@@ -4,6 +4,7 @@
  * Copyright (C) 2017 MX Authors
  *
  * Authors: Adrian
+ *          Dolphin_Oracle
  *          MX Linux <http://mxlinux.org>
  *
  * This file is part of mx-package-manager.

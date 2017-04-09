@@ -4,6 +4,7 @@
  * Copyright (C) 2017 MX Authors
  *
  * Authors: Adrian
+ *          Dolphin_Oracle
  *          MX Linux <http://mxlinux.org>
  *
  * This file is part of mx-package-manager.
@@ -31,12 +32,9 @@
 #include <QTextStream>
 #include <QtXml/QtXml>
 #include <QProgressBar>
-
-#include <QToolTip>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QImageReader>
-
 
 #include <QDebug>
 
@@ -340,7 +338,6 @@ void MainWindow::installPopularApps()
     while (*it) {
         if ((*it)->checkState(1) == Qt::Checked) {
             installPopularApp((*it)->text(2));
-            (*it)->setSelected(true);                // select current item for passing to other functions
         }
         ++it;
     }
@@ -353,6 +350,12 @@ void MainWindow::installPopularApps()
     }
     refreshPopularApps();
     this->show();
+}
+
+// Check if online
+bool MainWindow::checkOnline()
+{
+    return(system("wget -q --spider http://mxlinux.org >/dev/null 2>&1") == 0);
 }
 
 // Cleanup environment when window is closed
