@@ -32,12 +32,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
     cmd.cpp \
     mainwindow.cpp \
-    lockfile.cpp
+    lockfile.cpp \
+    versionnumber.cpp
 
 HEADERS  += \
     cmd.h \
     mainwindow.h \
-    lockfile.h
+    lockfile.h \
+    versionnumber.h
 
 FORMS    += \
     mainwindow.ui

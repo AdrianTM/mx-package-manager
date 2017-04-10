@@ -61,6 +61,7 @@ public:
     bool readPackageList();
 
     void displayPopularApps();
+    void displayPackages();
     void downloadImage(const QUrl &url);
     void installPopularApp(const QString &name);
     void installPopularApps();
@@ -91,10 +92,10 @@ private slots:
     void on_buttonInstall_clicked();
     void on_buttonAbout_clicked();
     void on_buttonHelp_clicked();
-    void on_treeWidget_expanded();
-    void on_treeWidget_itemClicked();
-    void on_treeWidget_itemExpanded(QTreeWidgetItem *item);
-    void on_treeWidget_itemCollapsed(QTreeWidgetItem *item);
+    void on_treePopularApps_expanded();
+    void on_treePopularApps_itemClicked();
+    void on_treePopularApps_itemExpanded(QTreeWidgetItem *item);
+    void on_treePopularApps_itemCollapsed(QTreeWidgetItem *item);
     void on_buttonUninstall_clicked();
     void on_tabWidget_currentChanged(int index);
 
