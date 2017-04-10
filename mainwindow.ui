@@ -29,7 +29,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabApps">
       <property name="sizePolicy">
@@ -269,7 +269,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QRadioButton" name="radioButton_2">
+           <widget class="QRadioButton" name="radioMXtest">
             <property name="text">
              <string>MX Test Repo</string>
             </property>
@@ -279,7 +279,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton">
+           <widget class="QRadioButton" name="radioBackports">
             <property name="text">
              <string>Debian Backports Repo</string>
             </property>

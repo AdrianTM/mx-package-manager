@@ -56,6 +56,10 @@ public:
 
     bool checkInstalled(const QString &names);
     bool checkOnline();
+    bool buildPackageLists();
+    bool downloadPackageList();
+    bool readPackageList();
+
     void displayPopularApps();
     void downloadImage(const QUrl &url);
     void installPopularApp(const QString &name);
@@ -89,23 +93,26 @@ private slots:
     void on_buttonHelp_clicked();
     void on_treeWidget_expanded();
     void on_treeWidget_itemClicked();
-    void on_treeWidget_itemExpanded();
-    void on_treeWidget_itemCollapsed();
-
+    void on_treeWidget_itemExpanded(QTreeWidgetItem *item);
+    void on_treeWidget_itemCollapsed(QTreeWidgetItem *item);
     void on_buttonUninstall_clicked();
+    void on_tabWidget_currentChanged(int index);
+
 
 private:
-    int heightApp;
+    int height_app;
     Cmd *cmd;
     LockFile *lock_file;
-    QList<QStringList> popularApps;
-    QTimer *timer;
+    QList<QStringList> popular_apps;
     QProgressBar *bar;
     QProgressDialog *progress;
     QString arch;
-    QStringList installedPackages;
+    QString tmp_dir;
+    QStringList installed_packages;
+    QStringList mx_list;
+    QStringList backports_list;
+    QTimer *timer;
     Ui::MainWindow *ui;
-
 };
 
 

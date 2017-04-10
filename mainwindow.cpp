@@ -65,14 +65,15 @@ void MainWindow::setup()
     ui->buttonCancel->setEnabled(true);
     ui->buttonInstall->setEnabled(false);
     ui->buttonUninstall->setEnabled(false);
-    QStringList columnNames;
-    columnNames << "" << "" << tr("Package") << tr("Info") << tr("Description");
-    ui->treeWidget->setHeaderLabels(columnNames);
-    installedPackages = listInstalled();
+    QStringList column_names;
+    column_names << "" << "" << tr("Package") << tr("Info") << tr("Description");
+    ui->treeWidget->setHeaderLabels(column_names);
+    installed_packages = listInstalled();
     loadPmFiles();
     displayPopularApps();
     connect(ui->searchPopular,&QLineEdit::textChanged, this, &MainWindow::findPackage);
     ui->searchPopular->setFocus();
+
 }
 
 // Uninstall listed packages
@@ -202,7 +203,7 @@ void MainWindow::processDoc(const QDomDocument &doc)
     }
     list << category << name << description << installable << screenshot << preinstall
          << postinstall << install_names << uninstall_names;
-    popularApps << list;
+    popular_apps << list;
 }
 
 // Reloadn and refresh interface
@@ -210,9 +211,10 @@ void MainWindow::refreshPopularApps()
 {
     lock_file->lock();
     ui->treeWidget->clear();
+    ui->searchPopular->clear();
     ui->buttonInstall->setEnabled(false);
     ui->buttonUninstall->setEnabled(false);
-    installedPackages = listInstalled();
+    installed_packages = listInstalled();
     displayPopularApps();
 }
 
@@ -236,7 +238,7 @@ void MainWindow::displayPopularApps()
     QTreeWidgetItem *topLevelItem = NULL;
     QTreeWidgetItem *childItem;
 
-    foreach (QStringList list, popularApps) {
+    foreach (QStringList list, popular_apps) {
         QString category = list[0];
         QString name = list[1];
         QString description = list[2];
@@ -303,7 +305,7 @@ void MainWindow::installPopularApp(const QString &name)
     QString install_names;
 
     // get all the app info
-    foreach (QStringList list, popularApps) {
+    foreach (QStringList list, popular_apps) {
         if (list[1] == name) {
             preinstall = list[5];
             postinstall = list[6];
@@ -355,7 +357,91 @@ void MainWindow::installPopularApps()
 // Check if online
 bool MainWindow::checkOnline()
 {
-    return(system("wget -q --spider http://mxlinux.org >/dev/null 2>&1") == 0);
+    return(system("wget -q --spider http://google.com >/dev/null 2>&1") == 0);
+}
+
+// Build the list of available packages from various source
+bool MainWindow::buildPackageLists()
+{
+    if (!downloadPackageList()) {
+        progress->hide();
+        return false;
+    }
+    if (!readPackageList()) {
+        progress->hide();
+        return false;
+    }
+
+
+
+    progress->hide();
+}
+
+// Download the Packages.gz from sources
+bool MainWindow::downloadPackageList()
+{
+    if (!checkOnline()) {
+        QMessageBox::critical(this, tr("Error"), tr("Internet is not available, won't be able to download the list of packages"));
+        return false;
+    }
+    if (tmp_dir == "") {
+        tmp_dir = cmd->getOutput("mktemp -d /tmp/mxpm-XXXXXXXX");
+    }
+    setConnections();
+    progress->setLabelText(tr("Downloading package info..."));
+    progress->show();
+    if (arch == "i686") {
+        if (ui->radioMXtest->isChecked())  {
+            return (cmd->run("wget http://mxrepo.com/mx/testrepo/dists/mx15/test/binary-i386/Packages.gz -O " + tmp_dir + "/mx15Packages.gz") == 0);
+        } else {
+            int err1 = cmd->run("wget ftp://ftp.us.debian.org/debian/dists/jessie-backports/main/binary-i386/Packages.gz -O " + tmp_dir + "/mainPackages.gz");
+            int err2 = cmd->run("wget ftp://ftp.us.debian.org/debian/dists/jessie-backports/contrib/binary-i386/Packages.gz -O " + tmp_dir + "/contribPackages.gz");
+            int err3 = cmd->run("wget ftp://ftp.us.debian.org/debian/dists/jessie-backports/non-free/binary-i386/Packages.gz -O " + tmp_dir + "/nonfreePackages.gz");
+            return (err1 + err2 + err3 == 0);
+        }
+    } else {
+        if (ui->radioMXtest->isChecked())  {
+            return (cmd->run("wget http://mxrepo.com/mx/testrepo/dists/mx15/test/binary-amd64/Packages.gz -O " + tmp_dir + "/mx15Packages.gz") == 0);
+        } else {
+            int err1 = cmd->run("wget ftp://ftp.us.debian.org/debian/dists/jessie-backports/main/binary-amd64/Packages.gz -O " + tmp_dir + "/mainPackages.gz");
+            int err2 = cmd->run("wget ftp://ftp.us.debian.org/debian/dists/jessie-backports/contrib/binary-amd64/Packages.gz -O " + tmp_dir + "/contribPackages.gz");
+            int err3 = cmd->run("wget ftp://ftp.us.debian.org/debian/dists/jessie-backports/non-free/binary-amd64/Packages.gz -O " + tmp_dir + "/nonfreePackages.gz");
+            return (err1 + err2 + err3 == 0);
+        }
+    }
+
+}
+
+// Process downloaded *Packages.gz files
+bool MainWindow::readPackageList()
+{
+    progress->setLabelText(tr("Reading downloaded file..."));
+    if (cmd->run("gzip -df " + tmp_dir + "/*Packages.gz") != 0) {
+        return false;
+    }
+    QString list = cmd->getOutput(QString("IFS=$'\\n'\n"
+                                          "declare -a packagename\n"
+                                          "declare -a packageversion\n"
+                                          "declare -a packagedescrip\n"
+                                          "packagename=(`cat %0/*Packages |awk '/Package:/ && !/-Package/'|cut -d ' ' -f2`)\n"
+                                          "packageversion=(`cat %0/*Packages |awk '/Version:/ && !/-Version:/'|cut -d ' ' -f2`)\n"
+                                          "packagedescrip=(`cat %0/*Packages |awk '/Description:/ && !/-Description:/'|cut -d ':' -f2`)\n"
+                                          "count=$(echo ${#packagename[@]})\n"
+                                          "echo $count Packages\n"
+                                          "i='0'\n"
+                                          "while [ \"$i\" -lt \"$count\" ]; do\n"
+                                              "echo \"${packagename[i]} ${packageversion[i]} ${packagedescrip[i]}\"\n"
+                                              "i=$[$i+1]\n"
+                                          "done").arg(tmp_dir));
+
+    if (ui->radioMXtest->isChecked())  { // read MX Test list
+        mx_list = list.split("\n");
+        mx_list.removeDuplicates();
+    } else {  // read Backports lsit
+        backports_list = list.split("\n");
+        backports_list.removeDuplicates();
+    }
+    return true;
 }
 
 // Cleanup environment when window is closed
@@ -365,6 +451,9 @@ void MainWindow::cleanup()
         cmd->kill();
     }
     lock_file->unlock();
+    if (tmp_dir.startsWith("/tmp/mxpm-")) {
+        system("rm -r " + tmp_dir.toUtf8());
+    }
 }
 
 // When the search is done
@@ -388,7 +477,7 @@ bool MainWindow::checkInstalled(const QString &names)
         return false;
     }
     foreach(QString name, names.split("\n")) {
-        if (!installedPackages.contains(name)) {
+        if (!installed_packages.contains(name)) {
             return false;
         }
     }
@@ -471,24 +560,45 @@ void MainWindow::displayInfo(QTreeWidgetItem *item, int column)
 // Find package in view
 void MainWindow::findPackage()
 {
+    QTreeWidgetItemIterator it(ui->treeWidget);
     QString word = ui->searchPopular->text();
     if (word == "") {
+        while (*it) {
+            (*it)->setExpanded(false);
+            ++it;
+        }
         ui->treeWidget->reset();
         return;
     }
     QList<QTreeWidgetItem *> found_items = ui->treeWidget->findItems(word, Qt::MatchContains|Qt::MatchRecursive, 2);
-    QTreeWidgetItemIterator it(ui->treeWidget);
+
+    // hide/unhide items
     while (*it) {
         if ((*it)->childCount() == 0) { // if child
             if (found_items.contains(*it)) {
-                (*it)->parent()->setExpanded(true);
                 (*it)->setHidden(false);
-            } else {
+          } else {
+                (*it)->parent()->setExpanded(false);
                 (*it)->setHidden(true);
             }
         }
         ++it;
     }
+
+    // process found items
+    foreach(QTreeWidgetItem *item, found_items) {
+        if (item->childCount() == 0) { // if child, expand parent
+            item->parent()->setExpanded(true);
+        } else {  // if parent, expand children
+            item->setExpanded(true);
+            int count = item->childCount();
+            for (int i = 0; i < count; i++ ) {
+                item->child(i)->setHidden(false);
+            }
+        }
+    }
+
+
 }
 
 // Install button clicked
@@ -560,28 +670,16 @@ void MainWindow::on_treeWidget_itemClicked()
 }
 
 // Tree item expanded
-void MainWindow::on_treeWidget_itemExpanded()
+void MainWindow::on_treeWidget_itemExpanded(QTreeWidgetItem *item)
 {
-    QTreeWidgetItemIterator it(ui->treeWidget);
-    while (*it) {
-        if ((*it)->isExpanded()) {
-            (*it)->setIcon(0, QIcon::fromTheme("folder-open"));
-        }
-        ++it;
-    }
+    item->setIcon(0, QIcon::fromTheme("folder-open"));
     ui->treeWidget->resizeColumnToContents(4);
 }
 
 // Tree item collapsed
-void MainWindow::on_treeWidget_itemCollapsed()
+void MainWindow::on_treeWidget_itemCollapsed(QTreeWidgetItem *item)
 {
-    QTreeWidgetItemIterator it(ui->treeWidget);
-    while (*it) {
-        if (!(*it)->isExpanded()) {
-            (*it)->setIcon(0, QIcon::fromTheme("folder-green"));
-        }
-        ++it;
-    }
+    item->setIcon(0, QIcon::fromTheme("folder-green"));
     ui->treeWidget->resizeColumnToContents(4);
 }
 
@@ -599,3 +697,12 @@ void MainWindow::on_buttonUninstall_clicked()
     }
     uninstall(names);
 }
+
+// Actions on switching the tabs
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+    if (index == 1) {
+        buildPackageLists();
+    }
+}
+
