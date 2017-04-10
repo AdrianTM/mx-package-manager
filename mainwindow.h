@@ -86,6 +86,7 @@ private slots:
     void cmdDone();
     void displayInfo(QTreeWidgetItem* item, int column);
     void findPackage();
+    void findPackageOther();
     void setConnections();
     void tock(int, int); // tick-tock, updates progressBar when tick signal is emited
 
@@ -99,6 +100,8 @@ private slots:
     void on_buttonUninstall_clicked();
     void on_tabWidget_currentChanged(int index);
 
+
+    void on_comboFilter_activated(const QString &arg1);
 
 private:
     int height_app;

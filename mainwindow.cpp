@@ -75,9 +75,9 @@ void MainWindow::setup()
     installed_packages = listInstalled();
     loadPmFiles();
     displayPopularApps();
-    connect(ui->searchPopular,&QLineEdit::textChanged, this, &MainWindow::findPackage);
+    connect(ui->searchPopular, &QLineEdit::textChanged, this, &MainWindow::findPackage);
+    connect(ui->searchBox, &QLineEdit::textChanged, this, &MainWindow::findPackageOther);
     ui->searchPopular->setFocus();
-
 }
 
 // Uninstall listed packages
@@ -347,6 +347,7 @@ void MainWindow::displayPackages()
     for (int i = 0; i < ui->treeOther->columnCount(); ++i) {
         ui->treeOther->resizeColumnToContents(i);
     }
+    ui->searchBox->setFocus();
     progress->hide();
     QString info_installed = cmd->getOutput("LC_ALL=en_US.UTF-8 apt-cache policy " + apps + "|grep Candidate -B2"); // intalled app info
     app_info_list = info_installed.split("--"); // list of installed apps
@@ -714,6 +715,23 @@ void MainWindow::findPackage()
     }
 }
 
+// Find packages in the second tab (other sources)
+void MainWindow::findPackageOther()
+{
+    QString word = ui->searchBox->text();
+    QList<QTreeWidgetItem *> found_items = ui->treeOther->findItems(word, Qt::MatchContains, 2);
+    QTreeWidgetItemIterator it(ui->treeOther);
+    while (*it) {
+      if ((*it)->text(6) == "true" && found_items.contains(*it)) {
+          (*it)->setHidden(false);
+      } else {
+          (*it)->setHidden(true);
+      }
+      ++it;
+    }
+}
+
+
 // Install button clicked
 void MainWindow::on_buttonInstall_clicked()
 {
@@ -821,3 +839,40 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     }
 }
 
+
+// Filter items according to selected filter
+void MainWindow::on_comboFilter_activated(const QString &arg1)
+{
+    QList<QTreeWidgetItem *> found_items;
+    QTreeWidgetItemIterator it(ui->treeOther);
+
+    if (arg1 == tr("All packages")) {
+        while (*it) {
+            (*it)->setText(6, "true"); // Displayed flag
+            (*it)->setHidden(false);
+            ++it;
+        }
+        findPackageOther();
+        return;
+    }
+
+    if (arg1 == tr("Upgradable")) {
+        found_items = ui->treeOther->findItems("upgradable", Qt::MatchExactly, 5);
+    } else if (arg1 == tr("Installed")) {
+        found_items = ui->treeOther->findItems("installed", Qt::MatchExactly, 5);
+    } else if (arg1 == tr("Not installed")) {
+        found_items = ui->treeOther->findItems("not installed", Qt::MatchExactly, 5);
+    }
+
+    while (*it) {
+        if (found_items.contains(*it) ) {
+            (*it)->setHidden(false);
+            (*it)->setText(6, "true"); // Displayed flag
+        } else {
+            (*it)->setHidden(true);
+            (*it)->setText(6, "false");
+        }
+        ++it;
+    }
+    findPackageOther();
+}
