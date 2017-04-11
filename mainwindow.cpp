@@ -312,6 +312,7 @@ void MainWindow::displayPackages()
     } else {
         list = backports_list;
     }
+    ui->treeOther->blockSignals(true);
 
     QHash<QString, VersionNumber> hashInstalled; // hash that contains (app_name, VersionNumber) returned by apt-cache policy
     QHash<QString, VersionNumber> hashCandidate; //hash that contains (app_name, VersionNumber) returned by apt-cache policy for candidates
@@ -323,7 +324,7 @@ void MainWindow::displayPackages()
     QString app_desc;
     VersionNumber installed;
     VersionNumber candidate;
-    QStringList app_info_list;
+
     QTreeWidgetItem *widget_item;
 
     ui->treeOther->clear();
@@ -347,8 +348,8 @@ void MainWindow::displayPackages()
     for (int i = 0; i < ui->treeOther->columnCount(); ++i) {
         ui->treeOther->resizeColumnToContents(i);
     }
-    ui->searchBox->setFocus();
-    progress->hide();
+    progress->setLabelText(tr("Updating package list..."));
+    setConnections();
     QString info_installed = cmd->getOutput("LC_ALL=en_US.UTF-8 apt-cache policy " + apps + "|grep Candidate -B2"); // intalled app info
     app_info_list = info_installed.split("--"); // list of installed apps
     // create a hash of name and installed version
@@ -387,7 +388,8 @@ void MainWindow::displayPackages()
         } else {
             if (installed >= candidatetest) {
                 for (int i = 0; i < ui->treeOther->columnCount(); ++i) {
-                    widget_item->setDisabled(true);
+                    widget_item->setForeground(2, QBrush(Qt::gray));
+                    widget_item->setForeground(4, QBrush(Qt::gray));
                     widget_item->setToolTip(i, tr("Latest version ") + installed.toString() + tr(" already installed"));
                 }
                 widget_item->setText(5, "installed");
@@ -403,7 +405,9 @@ void MainWindow::displayPackages()
     }
     QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
     ui->comboFilter->setEnabled(true);
-    ui->buttonInstall->setEnabled(true);
+    ui->searchBox->setFocus();
+    progress->hide();
+    ui->treeOther->blockSignals(false);
 }
 
 // install named app, return 'false' if any steps fails
@@ -527,6 +531,7 @@ bool MainWindow::readPackageList()
     if (cmd->run("gzip -df " + tmp_dir + "/*Packages.gz") != 0) {
         return false;
     }
+    setConnections();
     QString list = cmd->getOutput(QString("IFS=$'\\n'\n"
                                           "declare -a packagename\n"
                                           "declare -a packageversion\n"
@@ -591,6 +596,22 @@ bool MainWindow::checkInstalled(const QString &names)
     }
     return true;
 }
+
+// Return true if all the packages in the list are installed
+bool MainWindow::checkInstalled(const QStringList &name_list)
+{
+    if (name_list.size() == 0) {
+        return false;
+    }
+    foreach(QString name, name_list) {
+        if (!installed_packages.contains(name)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
 
 // Returns list of all installed packages
 QStringList MainWindow::listInstalled()
@@ -845,6 +866,7 @@ void MainWindow::on_comboFilter_activated(const QString &arg1)
 {
     QList<QTreeWidgetItem *> found_items;
     QTreeWidgetItemIterator it(ui->treeOther);
+    ui->treeOther->blockSignals(true);
 
     if (arg1 == tr("All packages")) {
         while (*it) {
@@ -853,6 +875,7 @@ void MainWindow::on_comboFilter_activated(const QString &arg1)
             ++it;
         }
         findPackageOther();
+        ui->treeOther->blockSignals(false);
         return;
     }
 
@@ -875,4 +898,31 @@ void MainWindow::on_comboFilter_activated(const QString &arg1)
         ++it;
     }
     findPackageOther();
+    ui->treeOther->blockSignals(false);
+}
+
+// When selecting on item in the list
+void MainWindow::on_treeOther_itemChanged(QTreeWidgetItem *item, int column)
+{
+    /* if all apps are uninstalled (or some installed) -> enable Install, disable Uinstall
+     * if all apps are installed or upgradable -> enable Uninstall, enable Install
+     */
+    QString newapp = QString(item->text(2));
+    if (item->checkState(0) == Qt::Checked) {
+        ui->buttonInstall->setEnabled(true);
+        change_list.append(newapp);
+    } else {
+        change_list.removeOne(newapp);
+    }
+
+    if (!checkInstalled(change_list)) {
+        ui->buttonUninstall->setEnabled(false);
+    } else {
+        ui->buttonUninstall->setEnabled(true);
+    }
+    if (change_list.isEmpty()) {
+        ui->buttonInstall->setEnabled(false);
+        ui->buttonUninstall->setEnabled(false);
+    }
+
 }

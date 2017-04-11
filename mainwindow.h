@@ -55,6 +55,7 @@ public:
     QString version;
 
     bool checkInstalled(const QString &names);
+    bool checkInstalled(const QStringList &name_list);
     bool checkOnline();
     bool buildPackageLists();
     bool downloadPackageList();
@@ -99,9 +100,8 @@ private slots:
     void on_treePopularApps_itemCollapsed(QTreeWidgetItem *item);
     void on_buttonUninstall_clicked();
     void on_tabWidget_currentChanged(int index);
-
-
     void on_comboFilter_activated(const QString &arg1);
+    void on_treeOther_itemChanged(QTreeWidgetItem *item, int column);
 
 private:
     int height_app;
@@ -112,9 +112,11 @@ private:
     QProgressDialog *progress;
     QString arch;
     QString tmp_dir;
-    QStringList installed_packages;
-    QStringList mx_list;
+    QStringList app_info_list;
     QStringList backports_list;
+    QStringList installed_packages;
+    QStringList change_list;
+    QStringList mx_list;    
     QTimer *timer;
     Ui::MainWindow *ui;
 };
