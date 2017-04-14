@@ -96,6 +96,7 @@ void MainWindow::uninstall(const QString &names)
     this->hide();
     lock_file->unlock();
     cmd->run("x-terminal-emulator -e apt-get remove " + names);
+    lock_file->lock();
     refreshPopularApps();
     this->show();
 }
@@ -108,6 +109,7 @@ void MainWindow::update()
     progress->show();
     progress->setLabelText(tr("Running apt-get update... "));
     cmd->run("apt-get update");
+    lock_file->lock();
     updated_once = true;
 }
 
@@ -284,6 +286,7 @@ void MainWindow::refreshItems(QList<QTreeWidgetItem *> items)
     QTreeWidgetItemIterator it(ui->treeOther);
     while (*it) {
         if(items.contains(*it)) { // process only the selected items
+            (*it)->setCheckState(0, Qt::Unchecked);
             if (installed.toString() == "(none)" || (installed.toString() == "")) {
                 (*it)->setIcon(1, QIcon());
                 (*it)->setText(5, "not installed");
@@ -312,7 +315,6 @@ void MainWindow::refreshItems(QList<QTreeWidgetItem *> items)
 // Reloadn and refresh interface
 void MainWindow::refreshPopularApps()
 {
-    lock_file->lock();
     ui->treePopularApps->clear();
     ui->treeOther->clear();
     ui->searchPopular->clear();
@@ -438,6 +440,7 @@ void MainWindow::displayPackages(bool force_refresh)
         }
         list = stable_list;
     }
+    progress->show();
 
     QHash<QString, VersionNumber> hashInstalled; // hash that contains (app_name, VersionNumber) returned by apt-cache policy
     QHash<QString, VersionNumber> hashCandidate; //hash that contains (app_name, VersionNumber) returned by apt-cache policy for candidates
@@ -551,7 +554,11 @@ void MainWindow::displayPackages(bool force_refresh)
 // Install the list of apps
 void MainWindow::install(const QString &names)
 {
+    this->hide();
+    lock_file->unlock();
     cmd->run("x-terminal-emulator -e apt-get install " + names);
+    lock_file->lock();
+    this->show();
 }
 
 // install named app, return 'false' if any steps fails
@@ -571,6 +578,7 @@ void MainWindow::installPopularApp(const QString &name)
     }
     setConnections();
     progress->setLabelText(tr("Pre-processing for ") + name);
+    lock_file->unlock();
     cmd->run(preinstall);
 
     if (install_names != "") {
@@ -583,13 +591,14 @@ void MainWindow::installPopularApp(const QString &name)
     }
     setConnections();
     progress->setLabelText(tr("Post-processing for ") + name);
+    lock_file->unlock();
     cmd->run(postinstall);
+    lock_file->lock();
     progress->hide();
 }
 
 void MainWindow::installPopularApps()
 {
-    //this->hide();
     update();
     QTreeWidgetItemIterator it(ui->treePopularApps);
     ui->treePopularApps->clearSelection(); //deselect all items
@@ -599,7 +608,6 @@ void MainWindow::installPopularApps()
         }
         ++it;
     }
-    lock_file->lock();
     setCursor(QCursor(Qt::ArrowCursor));
     if (QMessageBox::information(this, tr("Done"),
                                  tr("Process finished.<p><b>Do you want to exit MX Package Installer?</b>"),
@@ -608,6 +616,40 @@ void MainWindow::installPopularApps()
     }
     refreshPopularApps();
     this->show();
+}
+
+// Install selected items from ui->treeOther
+void MainWindow::installSelected()
+{
+    QString names = change_list.join(" ");
+
+    // build a list of items to pass for refresh
+    QTreeWidgetItemIterator it(ui->treeOther, QTreeWidgetItemIterator::Checked);
+    QList<QTreeWidgetItem *> items;
+    while (*it) {
+        items << *it;
+        ++it;
+    }
+    // change sources as needed
+    if(ui->radioMXtest->isChecked()) {
+        cmd->run("echo deb http://main.mepis-deb.org/mx/testrepo/ mx15 test>>/etc/apt/sources.list.d/mxpm-temp.list");
+        //enable mx16 repo if necessary
+        if (system("cat /etc/apt/sources.list.d/*.list |grep -q mx16") == 0) {
+            cmd->run("echo deb http://main.mepis-deb.org/mx/testrepo/ mx16 test>>/etc/apt/sources.list.d/mxpm-temp.list");
+        }
+        update();
+    } else if (ui->radioBackports->isChecked()) {
+        cmd->run("echo deb http://ftp.debian.org/debian jessie-backports main contrib non-free>/etc/apt/sources.list.d/mxpm-temp.list");
+        update();
+    }
+    progress->hide();
+    install(names);
+    if (ui->radioMXtest->isChecked() || ui->radioBackports->isChecked()) {
+        cmd->run("rm -f /etc/apt/sources.list.d/mxpm-temp.list");
+        update();
+    }
+    change_list.clear();
+    refreshItems(items);
 }
 
 // Check if online
@@ -619,9 +661,7 @@ bool MainWindow::checkOnline()
 // Build the list of available packages from various source
 bool MainWindow::buildPackageLists(bool force_download)
 {
-    ui->pushUpdate->setEnabled(false);
-    ui->comboFilter->setEnabled(false);
-    ui->groupBox->setEnabled(false);
+    clearUi();
     if (!downloadPackageList(force_download)) {
         progress->hide();
         return false;
@@ -731,6 +771,19 @@ bool MainWindow::readPackageList()
         backports_list = map;
     }
     return true;
+}
+
+// Clear UI when building package list
+void MainWindow::clearUi()
+{
+    ui->pushUpdate->setEnabled(false);
+    ui->comboFilter->setEnabled(false);
+    ui->groupBox->setEnabled(false);
+    ui->pushUpgradeAll->setHidden(true);
+    ui->labelNumApps->setText("");
+    ui->labelNumInst->setText("");
+    ui->labelNumUpgr->setText("");
+    ui->searchBox->clear();
 }
 
 // Copy QTreeWidgets
@@ -974,9 +1027,8 @@ void MainWindow::on_buttonInstall_clicked()
     if (ui->tabApps->isVisible()) {
         installPopularApps();
     } else {
-
+        installSelected();
     }
-
 }
 
 // About button clicked
@@ -1080,14 +1132,15 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         ui->pushUpdate->setEnabled(false);
         ui->comboFilter->setEnabled(false);
         ui->groupBox->setEnabled(false);
+        stable_tree->clear();
+        mx_test_tree->clear();
+        backports_tree->clear();
         progress->show();
-        if (downloadPackageList()) {
-            if (readPackageList()) {
-                displayPackages(true);
-            }
-        }
+        buildPackageLists();
 
     } if (index == 0) {
+        ui->treePopularApps->clear();
+        installed_packages = listInstalled();
         displayPopularApps();
     }
 }
@@ -1171,10 +1224,6 @@ void MainWindow::on_treeOther_itemChanged(QTreeWidgetItem *item)
 void MainWindow::on_radioStable_toggled(bool checked)
 {
     if(checked) {
-        ui->pushUpgradeAll->setHidden(true);
-        ui->labelNumApps->setText("");
-        ui->labelNumInst->setText("");
-        ui->labelNumUpgr->setText("");
         buildPackageLists();
     }
 }
@@ -1182,10 +1231,6 @@ void MainWindow::on_radioStable_toggled(bool checked)
 void MainWindow::on_radioMXtest_toggled(bool checked)
 {
     if(checked) {
-        ui->pushUpgradeAll->setHidden(true);
-        ui->labelNumApps->setText("");
-        ui->labelNumInst->setText("");
-        ui->labelNumUpgr->setText("");
         buildPackageLists();
     }
 }
@@ -1193,10 +1238,6 @@ void MainWindow::on_radioMXtest_toggled(bool checked)
 void MainWindow::on_radioBackports_toggled(bool checked)
 {
     if(checked) {
-        ui->pushUpgradeAll->setHidden(true);
-        ui->labelNumApps->setText("");
-        ui->labelNumInst->setText("");
-        ui->labelNumUpgr->setText("");
         buildPackageLists();
     }
 }

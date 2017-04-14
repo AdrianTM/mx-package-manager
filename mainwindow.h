@@ -62,6 +62,7 @@ public:
     bool downloadPackageList(bool force_download = false);
     bool readPackageList();
 
+    void clearUi();
     void copyTree(QTreeWidget *, QTreeWidget *);
     void displayPopularApps();
     void displayPackages(bool force_refresh = false);
@@ -69,6 +70,7 @@ public:
     void install(const QString &names);
     void installPopularApp(const QString &name);
     void installPopularApps();
+    void installSelected();
     void loadPmFiles();
     void processDoc(const QDomDocument &doc);
     void refreshItems(QList<QTreeWidgetItem *> items);

@@ -49,25 +49,25 @@ int main(int argc, char *argv[])
     a.installTranslator(&appTran);
 
 
-//    if (getuid() == 0) {
-//        // Don't start app if Synaptic/apt-get is running, lock dpkg otherwise while the program runs
-//        LockFile lock_file("/var/lib/dpkg/lock");
-//        if (lock_file.isLocked()) {
-//            QApplication::beep();
-//            QMessageBox::critical(0, QApplication::tr("Unable to get exclusive lock"),
-//                                  QApplication::tr("Another package management application (like Synaptic or apt-get), "\
-//                                                   "is already running. Please close that application first"));
-//            return 1;
-//        } else {
-//            lock_file.lock();
-//        }
+    if (getuid() == 0) {
+        // Don't start app if Synaptic/apt-get is running, lock dpkg otherwise while the program runs
+        LockFile lock_file("/var/lib/dpkg/lock");
+        if (lock_file.isLocked()) {
+            QApplication::beep();
+            QMessageBox::critical(0, QApplication::tr("Unable to get exclusive lock"),
+                                  QApplication::tr("Another package management application (like Synaptic or apt-get), "\
+                                                   "is already running. Please close that application first"));
+            return 1;
+        } else {
+            lock_file.lock();
+        }
         MainWindow w;
         w.show();
         return a.exec();
-//    } else {
-//        QApplication::beep();
-//        QMessageBox::critical(0, QString::null,
-//                              QApplication::tr("You must run this program as root."));
-//        return 1;
-//    }
+    } else {
+        QApplication::beep();
+        QMessageBox::critical(0, QString::null,
+                              QApplication::tr("You must run this program as root."));
+        return 1;
+    }
 }
