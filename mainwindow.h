@@ -56,27 +56,32 @@ public:
 
     bool checkInstalled(const QString &names);
     bool checkInstalled(const QStringList &name_list);
+    bool checkUpgradable(const QStringList &name_list);
     bool checkOnline();
-    bool buildPackageLists();
-    bool downloadPackageList();
+    bool buildPackageLists(bool force_download = false);
+    bool downloadPackageList(bool force_download = false);
     bool readPackageList();
 
+    void copyTree(QTreeWidget *, QTreeWidget *);
     void displayPopularApps();
-    void displayPackages();
+    void displayPackages(bool force_refresh = false);
     void downloadImage(const QUrl &url);
+    void install(const QString &names);
     void installPopularApp(const QString &name);
     void installPopularApps();
     void loadPmFiles();
     void processDoc(const QDomDocument &doc);
+    void refreshItems(QList<QTreeWidgetItem *> items);
     void refreshPopularApps();
     void setProgressDialog();
     void setup();
     void uninstall(const QString &names);
     void update();
+    void updateInterface();
 
     QString getVersion(QString name);
+    QString writeTmpFile(QString apps);
     QStringList listInstalled();
-
 
 public slots:
 
@@ -101,9 +106,18 @@ private slots:
     void on_buttonUninstall_clicked();
     void on_tabWidget_currentChanged(int index);
     void on_comboFilter_activated(const QString &arg1);
-    void on_treeOther_itemChanged(QTreeWidgetItem *item, int column);
+    void on_treeOther_itemChanged(QTreeWidgetItem *item);
+    void on_radioStable_toggled(bool checked);
+    void on_radioMXtest_toggled(bool checked);
+    void on_radioBackports_toggled(bool checked);
+    void on_pushUpdate_clicked();
+
+    void on_checkHideLibs_clicked(bool checked);
+
+    void on_pushUpgradeAll_clicked();
 
 private:
+    bool updated_once;
     int height_app;
     Cmd *cmd;
     LockFile *lock_file;
@@ -111,13 +125,18 @@ private:
     QProgressBar *bar;
     QProgressDialog *progress;
     QString arch;
+    QString stable_raw;
     QString tmp_dir;
     QStringList app_info_list;
-    QStringList backports_list;
     QStringList installed_packages;
     QStringList change_list;
-    QStringList mx_list;    
+    QMap<QString, QStringList> backports_list;
+    QMap<QString, QStringList> mx_list;
+    QMap<QString, QStringList> stable_list;
     QTimer *timer;
+    QTreeWidget *stable_tree;
+    QTreeWidget *mx_test_tree;
+    QTreeWidget *backports_tree;
     Ui::MainWindow *ui;
 };
 
