@@ -84,10 +84,11 @@ void MainWindow::setup()
     connect(ui->searchPopular, &QLineEdit::textChanged, this, &MainWindow::findPackage);
     connect(ui->searchBox, &QLineEdit::textChanged, this, &MainWindow::findPackageOther);
     ui->searchPopular->setFocus();
-    stable_tree = new QTreeWidget();
-    mx_test_tree = new QTreeWidget();
-    backports_tree = new QTreeWidget();
+    tree_stable = new QTreeWidget();
+    tree_mx_test = new QTreeWidget();
+    tree_backports = new QTreeWidget();
     updated_once = false;
+    warning_displayed = false;
 }
 
 // Uninstall listed packages
@@ -98,7 +99,12 @@ void MainWindow::uninstall(const QString &names)
     cmd->run("x-terminal-emulator -e apt-get remove " + names);
     lock_file->lock();
     refreshPopularApps();
+    clearCache();
     this->show();
+    if (ui->tabOtherRepos->isVisible()) {
+        qDebug() << "tab other is visible, rebuild";
+        buildPackageLists();
+    }
 }
 
 // Run apt-get update
@@ -409,32 +415,24 @@ void MainWindow::displayPopularApps()
 // Display available packages
 void MainWindow::displayPackages(bool force_refresh)
 {
-    QTime time;
-    time.start();
-
-    ui->treeOther->blockSignals(true);
-    ui->treeOther->clear();
-    ui->comboFilter->setDisabled(true);
-    ui->pushUpdate->setDisabled(true);
-
     QMap<QString, QStringList> list;
     if(ui->radioMXtest->isChecked()) {
-        if (mx_test_tree->topLevelItemCount() != 0 && !force_refresh) {
-            copyTree(mx_test_tree, ui->treeOther);
+        if (tree_mx_test->topLevelItemCount() != 0 && !force_refresh) {
+            copyTree(tree_mx_test, ui->treeOther);
             updateInterface();
             return;
         }
         list = mx_list;
     } else if (ui->radioBackports->isChecked()) {
-        if (backports_tree->topLevelItemCount() != 0 && !force_refresh) {
-            copyTree(backports_tree, ui->treeOther);
+        if (tree_backports->topLevelItemCount() != 0 && !force_refresh) {
+            copyTree(tree_backports, ui->treeOther);
             updateInterface();
             return;
         }
         list = backports_list;
     } else if (ui->radioStable->isChecked()) {
-        if (stable_tree->topLevelItemCount() != 0 && !force_refresh) {
-            copyTree(stable_tree, ui->treeOther);
+        if (tree_stable->topLevelItemCount() != 0 && !force_refresh) {
+            copyTree(tree_stable, ui->treeOther);
             updateInterface();
             return;
         }
@@ -477,7 +475,6 @@ void MainWindow::displayPackages(bool force_refresh)
     progress->setLabelText(tr("Updating package list..."));
     setConnections();
     QString info_installed = cmd->getOutput("LC_ALL=en_US.UTF-8 xargs apt-cache policy <" + tmp_file_name + "|grep Candidate -B2");
-    qDebug() << "apt-cache runtime: "<< time.restart();
     app_info_list = info_installed.split("--"); // list of installed apps
 
     // create a hash of name and installed version
@@ -539,24 +536,53 @@ void MainWindow::displayPackages(bool force_refresh)
         ++it;
     }
 
-    // backup trees for reuse
+    // cache trees for reuse
     if(ui->radioMXtest->isChecked()) {
-        copyTree(ui->treeOther, mx_test_tree);
+        copyTree(ui->treeOther, tree_mx_test);
     } else if (ui->radioBackports->isChecked()) {
-        copyTree(ui->treeOther, backports_tree);
+        copyTree(ui->treeOther, tree_backports);
     } else if (ui->radioStable->isChecked()) {
-        copyTree(ui->treeOther, stable_tree);
+        copyTree(ui->treeOther, tree_stable);
     }
-    qDebug() << "displaying items time: "<< time.restart();
     updateInterface();
+}
+
+// Display warning for Debian Backports
+void MainWindow::displayWarning()
+{
+    if (warning_displayed) {
+        return;
+    }
+    QFileInfo checkfile(QDir::homePath() + "/.config/mx-debian-backports-installer");
+    if (checkfile.exists()) {
+        return;
+    }
+    QMessageBox msgBox(QMessageBox::Warning,
+                       tr("Warning"),
+                       tr("You are about to use Debian Backports, which contains packages taken from the next "\
+                          "Debian release (called 'testing'), adjusted and recompiled for usage on Debian stable. "\
+                          "They cannot be tested as extensively as in the stable releases of Debian and MX Linux, "\
+                          "and are provided on an as-is basis, with risk of incompatibilities with other components "\
+                          "in Debian stable. Use with care!"), 0, 0);
+    msgBox.addButton(QMessageBox::Close);
+    QCheckBox *cb = new QCheckBox();
+    msgBox.setCheckBox(cb);
+    cb->setText(tr("Do not show this message again"));
+    connect(cb, SIGNAL(clicked(bool)), this, SLOT(disableWarning(bool)));
+    msgBox.exec();
+    warning_displayed = true;
 }
 
 // Install the list of apps
 void MainWindow::install(const QString &names)
 {
+    if (!checkOnline()) {
+        QMessageBox::critical(this, tr("Error"), tr("Internet is not available, won't be able to download the list of packages"));
+        return;
+    }
     this->hide();
     lock_file->unlock();
-    cmd->run("x-terminal-emulator -e apt-get install " + names);
+    cmd->run("x-terminal-emulator -e apt-get install --reinstall " + names);
     lock_file->lock();
     this->show();
 }
@@ -599,7 +625,13 @@ void MainWindow::installPopularApp(const QString &name)
 
 void MainWindow::installPopularApps()
 {
-    update();
+    if (!checkOnline()) {
+        QMessageBox::critical(this, tr("Error"), tr("Internet is not available, won't be able to download the list of packages"));
+        return;
+    }
+    if (!updated_once) {
+        update();
+    }
     QTreeWidgetItemIterator it(ui->treePopularApps);
     ui->treePopularApps->clearSelection(); //deselect all items
     while (*it) {
@@ -615,6 +647,7 @@ void MainWindow::installPopularApps()
         qApp->exit(0);
     }
     refreshPopularApps();
+    clearCache();
     this->show();
 }
 
@@ -649,7 +682,10 @@ void MainWindow::installSelected()
         update();
     }
     change_list.clear();
-    refreshItems(items);
+    tree_mx_test->clear();
+    tree_stable->clear();
+    tree_backports->clear();
+    buildPackageLists();
 }
 
 // Check if online
@@ -666,7 +702,7 @@ bool MainWindow::buildPackageLists(bool force_download)
         progress->hide();
         return false;
     }
-    if (!readPackageList()) {
+    if (!readPackageList(force_download)) {
         progress->hide();
         return false;
     }
@@ -724,7 +760,7 @@ bool MainWindow::downloadPackageList(bool force_download)
 }
 
 // Process downloaded *Packages.gz files
-bool MainWindow::readPackageList()
+bool MainWindow::readPackageList(bool force_download)
 {
     QFile file;
     QMap<QString, QStringList> map;
@@ -733,9 +769,14 @@ bool MainWindow::readPackageList()
     QStringList version_list;
     QStringList description_list;
 
+    if (!(stable_list.isEmpty() || mx_list.isEmpty() || backports_list.isEmpty() || force_download)) {
+        return true;
+    }
+
     if (ui->radioStable->isChecked()) { // read Stable list
         list = stable_raw.split("\n");
     } else {
+         progress->show();
          progress->setLabelText(tr("Reading downloaded file..."));
          if (ui->radioMXtest->isChecked())  { // read MX Test list
              file.setFileName(tmp_dir + "/mx15Packages");
@@ -784,6 +825,8 @@ void MainWindow::clearUi()
     ui->labelNumInst->setText("");
     ui->labelNumUpgr->setText("");
     ui->searchBox->clear();
+    ui->treeOther->clear();
+    ui->treeOther->blockSignals(true);
 }
 
 // Copy QTreeWidgets
@@ -811,6 +854,14 @@ void MainWindow::cleanup()
     if (tmp_dir.startsWith("/tmp/mxpm-")) {
         system("rm -r " + tmp_dir.toUtf8());
     }
+}
+
+// Clear cached trees
+void MainWindow::clearCache()
+{
+    tree_stable->clear();
+    tree_mx_test->clear();
+    tree_backports->clear();
 }
 
 // When the search is done
@@ -895,6 +946,14 @@ void MainWindow::cmdDone()
 {
     setCursor(QCursor(Qt::ArrowCursor));
     cmd->disconnect();
+}
+
+// Disable Backports warning
+void MainWindow::disableWarning(bool checked)
+{
+    if (checked) {
+        system("touch " + QDir::homePath().toUtf8() + "/.config/mx-debian-backports-installer");
+    }
 }
 
 // Display info when clicking the "info" icon of the package
@@ -1129,15 +1188,7 @@ void MainWindow::on_buttonUninstall_clicked()
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     if (index == 1) {
-        ui->pushUpdate->setEnabled(false);
-        ui->comboFilter->setEnabled(false);
-        ui->groupBox->setEnabled(false);
-        stable_tree->clear();
-        mx_test_tree->clear();
-        backports_tree->clear();
-        progress->show();
         buildPackageLists();
-
     } if (index == 0) {
         ui->treePopularApps->clear();
         installed_packages = listInstalled();
@@ -1238,6 +1289,7 @@ void MainWindow::on_radioMXtest_toggled(bool checked)
 void MainWindow::on_radioBackports_toggled(bool checked)
 {
     if(checked) {
+        displayWarning();
         buildPackageLists();
     }
 }
@@ -1282,6 +1334,6 @@ void MainWindow::on_pushUpgradeAll_clicked()
     }
 
     install(names);
-
-    refreshItems(found_items);
+    clearCache();
+    displayPackages();
 }

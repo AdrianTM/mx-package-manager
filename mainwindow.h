@@ -60,12 +60,13 @@ public:
     bool checkOnline();
     bool buildPackageLists(bool force_download = false);
     bool downloadPackageList(bool force_download = false);
-    bool readPackageList();
+    bool readPackageList(bool force_download = false);
 
     void clearUi();
     void copyTree(QTreeWidget *, QTreeWidget *);
     void displayPopularApps();
     void displayPackages(bool force_refresh = false);
+    void displayWarning();
     void downloadImage(const QUrl &url);
     void install(const QString &names);
     void installPopularApp(const QString &name);
@@ -89,9 +90,11 @@ public slots:
 
 private slots:
     void cleanup();
+    void clearCache();
     void closeSearch();
     void cmdStart();
     void cmdDone();
+    void disableWarning(bool checked);
     void displayInfo(QTreeWidgetItem* item, int column);
     void findPackage();
     void findPackageOther();
@@ -113,13 +116,12 @@ private slots:
     void on_radioMXtest_toggled(bool checked);
     void on_radioBackports_toggled(bool checked);
     void on_pushUpdate_clicked();
-
     void on_checkHideLibs_clicked(bool checked);
-
     void on_pushUpgradeAll_clicked();
 
 private:
     bool updated_once;
+    bool warning_displayed;
     int height_app;
     Cmd *cmd;
     LockFile *lock_file;
@@ -136,9 +138,9 @@ private:
     QMap<QString, QStringList> mx_list;
     QMap<QString, QStringList> stable_list;
     QTimer *timer;
-    QTreeWidget *stable_tree;
-    QTreeWidget *mx_test_tree;
-    QTreeWidget *backports_tree;
+    QTreeWidget *tree_stable;
+    QTreeWidget *tree_mx_test;
+    QTreeWidget *tree_backports;
     Ui::MainWindow *ui;
 };
 

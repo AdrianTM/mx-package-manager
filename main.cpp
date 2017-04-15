@@ -48,7 +48,6 @@ int main(int argc, char *argv[])
     appTran.load(QString("mx-package-manager_") + QLocale::system().name(), "/usr/share/mx-package-manager/locale");
     a.installTranslator(&appTran);
 
-
     if (getuid() == 0) {
         // Don't start app if Synaptic/apt-get is running, lock dpkg otherwise while the program runs
         LockFile lock_file("/var/lib/dpkg/lock");
