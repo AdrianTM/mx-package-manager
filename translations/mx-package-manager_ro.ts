@@ -238,7 +238,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1036"/>
+        <location filename="../mainwindow.cpp" line="1037"/>
         <location filename="../mainwindow.cpp" line="1130"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
@@ -374,7 +374,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1037"/>
+        <location filename="../mainwindow.cpp" line="1036"/>
         <location filename="../mainwindow.cpp" line="1039"/>
         <source>License</source>
         <translation type="unfinished"></translation>

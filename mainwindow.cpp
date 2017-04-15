@@ -1032,10 +1032,10 @@ void MainWindow::on_buttonAbout_clicked()
                        tr("MX Package Manager") + "</h2></b></p><p align=\"center\">" + tr("Version: ") + version + "</p><p align=\"center\"><h3>" +
                        tr("Package Manager for MX Linux") +
                        "</h3></p><p align=\"center\"><a href=\"http://mxlinux.org\">http://mxlinux.org</a><br /></p><p align=\"center\">" +
-                       tr("Copyright (c) MX Linux") + "<br /><br /></p>", 0, this);
-    msgBox.addButton(tr("Cancel"), QMessageBox::AcceptRole); // because we want to display the buttons in reverse order we use counter-intuitive roles.
-    msgBox.addButton(tr("License"), QMessageBox::RejectRole);
-    if (msgBox.exec() == QMessageBox::RejectRole) {
+                       tr("Copyright (c) MX Linux") + "<br /><br /></p>");
+    msgBox.addButton(tr("License"), QMessageBox::AcceptRole);
+    msgBox.addButton(tr("Cancel"), QMessageBox::NoRole);
+    if (msgBox.exec() == QMessageBox::YesRole) {
         system("mx-viewer file:///usr/share/doc/mx-package-manager/license.html '" + tr("MX Package Manager").toUtf8() + " " + tr("License").toUtf8() + "'");
     }
     this->show();
