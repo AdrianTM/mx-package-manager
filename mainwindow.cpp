@@ -1120,27 +1120,32 @@ void MainWindow::on_buttonUninstall_clicked()
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     if (index == 1) {
-        QMessageBox msgBox(QMessageBox::Question,
-                           tr("Repo Selection"),
-                           tr("Plese select which repo to load"));
-        msgBox.addButton(tr("Debian Backports Repo"), QMessageBox::AcceptRole);
-        msgBox.addButton(tr("MX Test Repo"), QMessageBox::AcceptRole);
-        msgBox.addButton(tr("Stable Repo"), QMessageBox::AcceptRole);
-        msgBox.addButton(tr("Cancel"), QMessageBox::NoRole);
-        int ret = msgBox.exec();
-        switch (ret) {
-        case 0:
-            ui->radioBackports->setChecked(true);
-            break;
-        case 1:
-            ui->radioMXtest->setChecked(true);
-            break;
-        case 2:
-            ui->radioStable->setChecked(true);
-            break;
-        default:
-            ui->tabWidget->setCurrentIndex(0);
-            return;
+        // show select message if there's no tree cached
+       if (tree_mx_test->topLevelItemCount() == 0  && tree_backports->topLevelItemCount() == 0 &&
+                tree_stable->topLevelItemCount() == 0)
+        {
+            QMessageBox msgBox(QMessageBox::Question,
+                               tr("Repo Selection"),
+                               tr("Plese select which repo to load"));
+            msgBox.addButton(tr("Debian Backports Repo"), QMessageBox::AcceptRole);
+            msgBox.addButton(tr("MX Test Repo"), QMessageBox::AcceptRole);
+            msgBox.addButton(tr("Stable Repo"), QMessageBox::AcceptRole);
+            msgBox.addButton(tr("Cancel"), QMessageBox::NoRole);
+            int ret = msgBox.exec();
+            switch (ret) {
+            case 0:
+                ui->radioBackports->setChecked(true);
+                break;
+            case 1:
+                ui->radioMXtest->setChecked(true);
+                break;
+            case 2:
+                ui->radioStable->setChecked(true);
+                break;
+            default:
+                ui->tabWidget->setCurrentIndex(0);
+                return;
+            }
         }
         buildPackageLists();
     } if (index == 0) {
