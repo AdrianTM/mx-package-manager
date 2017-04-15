@@ -96,6 +96,7 @@ void MainWindow::uninstall(const QString &names)
 {
     this->hide();
     lock_file->unlock();
+    qDebug() << "uninstall list: " << names;
     cmd->run("x-terminal-emulator -e apt-get remove " + names);
     lock_file->lock();
     refreshPopularApps();
@@ -1101,9 +1102,11 @@ void MainWindow::on_buttonUninstall_clicked()
 {
     QString names;
     if (ui->tabApps->isVisible()) {
-        QTreeWidgetItemIterator it(ui->treePopularApps, QTreeWidgetItemIterator::Checked);
+        QTreeWidgetItemIterator it(ui->treePopularApps);
         while (*it) {
-            names += (*it)->text(6).replace("\n", " ") + " ";
+            if ((*it)->checkState(1) == Qt::Checked) {
+                names += (*it)->text(6).replace("\n", " ") + " ";
+            }
             ++it;
         }
     } else if (ui->tabOtherRepos->isVisible()) {
