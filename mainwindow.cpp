@@ -159,9 +159,9 @@ QString MainWindow::writeTmpFile(QString apps)
 // Set proc and timer connections
 void MainWindow::setConnections()
 {
-    connect(cmd, &Cmd::runTime, this, &MainWindow::tock);  // processes runtime emited by Cmd to be used by a progress bar
-    connect(cmd, &Cmd::started, this, &MainWindow::cmdStart);
-    connect(cmd, &Cmd::finished, this, &MainWindow::cmdDone);
+    connect(cmd, &Cmd::runTime, this, &MainWindow::tock, Qt::UniqueConnection);  // processes runtime emited by Cmd to be used by a progress bar
+    connect(cmd, &Cmd::started, this, &MainWindow::cmdStart, Qt::UniqueConnection);
+    connect(cmd, &Cmd::finished, this, &MainWindow::cmdDone, Qt::UniqueConnection);
 }
 
 
@@ -349,7 +349,7 @@ void MainWindow::displayPopularApps()
         ui->treePopularApps->resizeColumnToContents(i);
     }
     ui->treePopularApps->sortItems(2, Qt::AscendingOrder);
-    connect(ui->treePopularApps, &QTreeWidget::itemClicked, this, &MainWindow::displayInfo);
+    connect(ui->treePopularApps, &QTreeWidget::itemClicked, this, &MainWindow::displayInfo, Qt::UniqueConnection);
 }
 
 
@@ -509,7 +509,7 @@ void MainWindow::displayWarning()
     QCheckBox *cb = new QCheckBox();
     msgBox.setCheckBox(cb);
     cb->setText(tr("Do not show this message again"));
-    connect(cb, SIGNAL(clicked(bool)), this, SLOT(disableWarning(bool)));
+    connect(cb, &QCheckBox::clicked, this, &MainWindow::disableWarning);
     msgBox.exec();
     warning_displayed = true;
 }
@@ -934,7 +934,6 @@ void MainWindow::displayInfo(QTreeWidgetItem *item, int column)
                 }
             }
         }
-
         QMessageBox info(QMessageBox::NoIcon, tr("Package info") , msg, QMessageBox::Close, this);
         info.exec();
     }
