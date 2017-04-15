@@ -134,8 +134,8 @@ void MainWindow::updateInterface()
     ui->comboFilter->setEnabled(true);
     ui->buttonForceUpdate->setEnabled(true);
     ui->groupBox->setEnabled(true);
-    ui->searchBox->setFocus();
     progress->hide();
+    ui->searchBox->setFocus();
     ui->treeOther->blockSignals(false);
 }
 
@@ -435,7 +435,7 @@ void MainWindow::displayPackages(bool force_refresh)
     // update tree
     while (*it) {
         app_name = (*it)->text(2);
-        if ((app_name.startsWith("lib") || app_name.endsWith("-dev")) && ui->checkHideLibs->isChecked()) {
+        if (((app_name.startsWith("lib") && !app_name.startsWith("libre")) || app_name.endsWith("-dev")) && ui->checkHideLibs->isChecked()) {
             (*it)->setHidden(true);
         }
         app_ver = (*it)->text(3);
@@ -1006,7 +1006,7 @@ void MainWindow::findPackageOther()
       }
       // hide libs
       QString app_name = (*it)->text(2);
-      if ((app_name.startsWith("lib") || app_name.endsWith("-dev")) && ui->checkHideLibs->isChecked()) {
+      if (((app_name.startsWith("lib") && !app_name.startsWith("libre")) || app_name.endsWith("-dev")) && ui->checkHideLibs->isChecked()) {
           (*it)->setHidden(true);
       }
       ++it;
@@ -1040,7 +1040,6 @@ void MainWindow::on_buttonAbout_clicked()
     }
     this->show();
 }
-
 // Help button clicked
 void MainWindow::on_buttonHelp_clicked()
 {
@@ -1261,7 +1260,7 @@ void MainWindow::on_checkHideLibs_clicked(bool checked)
     QTreeWidgetItemIterator it(ui->treeOther);
     while (*it) {
         QString app_name = (*it)->text(2);
-        if ((app_name.startsWith("lib") || app_name.endsWith("-dev")) && checked) {
+        if (((app_name.startsWith("lib") && !app_name.startsWith("libre")) || app_name.endsWith("-dev")) && checked) {
             (*it)->setHidden(true);
         } else {
             (*it)->setHidden(false);
