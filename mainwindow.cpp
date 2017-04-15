@@ -1280,10 +1280,11 @@ void MainWindow::on_buttonUpgradeAll_clicked()
 
     while (*it) {
         if(found_items.contains(*it)) {
-            names += (*it)->text(2);
+            names += (*it)->text(2) + " ";
         }
         ++it;
     }
+    qDebug() << "upgrading pacakges: " << names;
 
     install(names);
     clearCache();
