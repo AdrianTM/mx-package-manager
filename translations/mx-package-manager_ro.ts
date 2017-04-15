@@ -44,16 +44,19 @@
     </message>
     <message>
         <location filename="../mainwindow.ui" line="150"/>
+        <location filename="../mainwindow.cpp" line="1129"/>
         <source>Stable Repo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="160"/>
+        <location filename="../mainwindow.cpp" line="1128"/>
         <source>MX Test Repo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="170"/>
+        <location filename="../mainwindow.cpp" line="1127"/>
         <source>Debian Backports Repo</source>
         <translation type="unfinished"></translation>
     </message>
@@ -100,25 +103,25 @@
     <message>
         <location filename="../mainwindow.ui" line="261"/>
         <location filename="../mainwindow.ui" line="265"/>
-        <location filename="../mainwindow.cpp" line="1160"/>
+        <location filename="../mainwindow.cpp" line="1162"/>
         <source>All packages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="270"/>
-        <location filename="../mainwindow.cpp" line="1173"/>
+        <location filename="../mainwindow.cpp" line="1175"/>
         <source>Installed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="275"/>
-        <location filename="../mainwindow.cpp" line="1171"/>
+        <location filename="../mainwindow.cpp" line="1173"/>
         <source>Upgradable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="280"/>
-        <location filename="../mainwindow.cpp" line="1175"/>
+        <location filename="../mainwindow.cpp" line="1177"/>
         <source>Not installed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -210,7 +213,7 @@
     <message>
         <location filename="../mainwindow.ui" line="630"/>
         <location filename="../mainwindow.cpp" line="1081"/>
-        <location filename="../mainwindow.cpp" line="1218"/>
+        <location filename="../mainwindow.cpp" line="1220"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
@@ -236,6 +239,7 @@
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1036"/>
+        <location filename="../mainwindow.cpp" line="1130"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -391,7 +395,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1216"/>
+        <location filename="../mainwindow.cpp" line="1218"/>
         <source>Upgrade</source>
         <translation type="unfinished"></translation>
     </message>

@@ -1123,24 +1123,26 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     if (index == 1) {
         QMessageBox msgBox(QMessageBox::Question,
                            tr("Repo Selection"),
-                           tr("Plese select which repo to load"), 0, 0);
-        msgBox.addButton("Debian Backports Repo", QMessageBox::AcceptRole);
-        msgBox.addButton("MX Test Repo", QMessageBox::AcceptRole);
-        msgBox.addButton("Stable Repo", QMessageBox::AcceptRole);
+                           tr("Plese select which repo to load"));
+        msgBox.addButton(tr("Debian Backports Repo"), QMessageBox::AcceptRole);
+        msgBox.addButton(tr("MX Test Repo"), QMessageBox::AcceptRole);
+        msgBox.addButton(tr("Stable Repo"), QMessageBox::AcceptRole);
+        msgBox.addButton(tr("Cancel"), QMessageBox::NoRole);
         int ret = msgBox.exec();
         switch (ret) {
-             case 0:
-                 ui->radioBackports->setChecked(true);
-                 break;
-             case 1:
-                 ui->radioMXtest->setChecked(true);
-                 break;
-             case 2:
-                 ui->radioStable->setChecked(true);
-                 break;
-             default:
-                 break;
-           }
+        case 0:
+            ui->radioBackports->setChecked(true);
+            break;
+        case 1:
+            ui->radioMXtest->setChecked(true);
+            break;
+        case 2:
+            ui->radioStable->setChecked(true);
+            break;
+        default:
+            ui->tabWidget->setCurrentIndex(0);
+            return;
+        }
         buildPackageLists();
     } if (index == 0) {
         ui->treePopularApps->clear();
