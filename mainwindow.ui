@@ -29,7 +29,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabApps">
       <property name="sizePolicy">
@@ -296,7 +296,7 @@
         </widget>
        </item>
        <item row="0" column="5">
-        <widget class="QPushButton" name="buttonUpdate">
+        <widget class="QPushButton" name="buttonForceUpdate">
          <property name="minimumSize">
           <size>
            <width>150</width>

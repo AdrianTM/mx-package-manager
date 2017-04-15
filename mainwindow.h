@@ -113,7 +113,7 @@ private slots:
     void on_radioStable_toggled(bool checked);
     void on_radioMXtest_toggled(bool checked);
     void on_radioBackports_toggled(bool checked);
-    void on_buttonUpdate_clicked();
+    void on_buttonForceUpdate_clicked();
     void on_checkHideLibs_clicked(bool checked);
     void on_buttonUpgradeAll_clicked();
 

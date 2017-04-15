@@ -67,11 +67,6 @@ void MainWindow::setup()
     version = getVersion("mx-package-manager");
     this->setWindowTitle(tr("MX Package Manager"));
     ui->tabWidget->setCurrentIndex(0);
-    ui->buttonCancel->setEnabled(true);
-    ui->buttonInstall->setEnabled(false);
-    ui->buttonUninstall->setEnabled(false);
-    ui->buttonUpgradeAll->setHidden(true);
-    ui->buttonUpdate->setEnabled(true);
     QStringList column_names;
     column_names << "" << "" << tr("Package") << tr("Info") << tr("Description");
     ui->treePopularApps->setHeaderLabels(column_names);
@@ -89,6 +84,7 @@ void MainWindow::setup()
     tree_backports = new QTreeWidget();
     updated_once = false;
     warning_displayed = false;
+    clearUi();
 }
 
 // Uninstall listed packages
@@ -136,7 +132,7 @@ void MainWindow::updateInterface()
 
     QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
     ui->comboFilter->setEnabled(true);
-    ui->buttonUpdate->setEnabled(true);
+    ui->buttonForceUpdate->setEnabled(true);
     ui->groupBox->setEnabled(true);
     ui->searchBox->setFocus();
     progress->hide();
@@ -638,6 +634,7 @@ bool MainWindow::checkOnline()
 bool MainWindow::buildPackageLists(bool force_download)
 {
     clearUi();
+    ui->treeOther->blockSignals(true);
     if (!downloadPackageList(force_download)) {
         progress->hide();
         return false;
@@ -758,17 +755,22 @@ bool MainWindow::readPackageList(bool force_download)
 // Clear UI when building package list
 void MainWindow::clearUi()
 {
-    ui->buttonUpdate->setEnabled(false);
     ui->comboFilter->setEnabled(false);
     ui->comboFilter->setCurrentIndex(0);
     ui->groupBox->setEnabled(false);
-    ui->buttonUpgradeAll->setHidden(true);
+
     ui->labelNumApps->setText("");
     ui->labelNumInst->setText("");
     ui->labelNumUpgr->setText("");
+
+    ui->buttonCancel->setEnabled(true);
+    ui->buttonInstall->setEnabled(false);
+    ui->buttonUninstall->setEnabled(false);
+    ui->buttonUpgradeAll->setHidden(true);
+    ui->buttonForceUpdate->setEnabled(false);
+
     ui->searchBox->clear();
     ui->treeOther->clear();
-    ui->treeOther->blockSignals(true);
 }
 
 // Copy QTreeWidgets
@@ -1119,6 +1121,26 @@ void MainWindow::on_buttonUninstall_clicked()
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     if (index == 1) {
+        QMessageBox msgBox(QMessageBox::Question,
+                           tr("Repo Selection"),
+                           tr("Plese select which repo to load"), 0, 0);
+        msgBox.addButton("Debian Backports Repo", QMessageBox::AcceptRole);
+        msgBox.addButton("MX Test Repo", QMessageBox::AcceptRole);
+        msgBox.addButton("Stable Repo", QMessageBox::AcceptRole);
+        int ret = msgBox.exec();
+        switch (ret) {
+             case 0:
+                 ui->radioBackports->setChecked(true);
+                 break;
+             case 1:
+                 ui->radioMXtest->setChecked(true);
+                 break;
+             case 2:
+                 ui->radioStable->setChecked(true);
+                 break;
+             default:
+                 break;
+           }
         buildPackageLists();
     } if (index == 0) {
         ui->treePopularApps->clear();
@@ -1226,7 +1248,7 @@ void MainWindow::on_radioBackports_toggled(bool checked)
 }
 
 // Force repo upgrade
-void MainWindow::on_buttonUpdate_clicked()
+void MainWindow::on_buttonForceUpdate_clicked()
 {
     buildPackageLists(true);
 }
