@@ -296,7 +296,7 @@
         </widget>
        </item>
        <item row="0" column="5">
-        <widget class="QPushButton" name="pushUpdate">
+        <widget class="QPushButton" name="buttonUpdate">
          <property name="minimumSize">
           <size>
            <width>150</width>
@@ -472,7 +472,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushUpgradeAll">
+           <widget class="QPushButton" name="buttonUpgradeAll">
             <property name="text">
              <string>Upgrade All</string>
             </property>

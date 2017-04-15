@@ -74,7 +74,6 @@ public:
     void installSelected();
     void loadPmFiles();
     void processDoc(const QDomDocument &doc);
-    void refreshItems(QList<QTreeWidgetItem *> items);
     void refreshPopularApps();
     void setProgressDialog();
     void setup();
@@ -91,7 +90,6 @@ public slots:
 private slots:
     void cleanup();
     void clearCache();
-    void closeSearch();
     void cmdStart();
     void cmdDone();
     void disableWarning(bool checked);
@@ -115,9 +113,9 @@ private slots:
     void on_radioStable_toggled(bool checked);
     void on_radioMXtest_toggled(bool checked);
     void on_radioBackports_toggled(bool checked);
-    void on_pushUpdate_clicked();
+    void on_buttonUpdate_clicked();
     void on_checkHideLibs_clicked(bool checked);
-    void on_pushUpgradeAll_clicked();
+    void on_buttonUpgradeAll_clicked();
 
 private:
     bool updated_once;
