@@ -698,11 +698,12 @@ bool MainWindow::downloadPackageList(bool force_download)
     progCancel->setEnabled(true);
     if (ui->radioStable->isChecked()) {
         if (stable_raw.isEmpty() || force_download) {
-            if (!updated_once || force_download) {
+            if (force_download) {
                 if (!update()) {
                     return false;
                 }
             }
+            progress->show();
             stable_raw = cmd->getOutput("LC_ALL=en_US.UTF-8 apt-cache dumpavail");
         }
     } else if (ui->radioMXtest->isChecked())  {
