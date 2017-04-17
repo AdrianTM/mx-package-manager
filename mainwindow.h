@@ -62,12 +62,14 @@ public:
     bool downloadPackageList(bool force_download = false);
     bool readPackageList(bool force_download = false);
 
+    void cancelDownload();
     void clearUi();
     void copyTree(QTreeWidget *, QTreeWidget *);
     void displayPopularApps();
     void displayPackages(bool force_refresh = false);
     void displayWarning();
     void downloadImage(const QUrl &url);
+    void ifDownloadFailed();
     void install(const QString &names);
     void installPopularApp(const QString &name);
     void installPopularApps();
@@ -78,7 +80,7 @@ public:
     void setProgressDialog();
     void setup();
     void uninstall(const QString &names);
-    void update();
+    bool update();
     void updateInterface();
 
     QString getVersion(QString name);
@@ -123,6 +125,7 @@ private:
     int height_app;
     Cmd *cmd;
     LockFile *lock_file;
+    QPushButton *progCancel;
     QList<QStringList> popular_apps;
     QProgressBar *bar;
     QProgressDialog *progress;

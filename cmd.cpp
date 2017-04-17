@@ -46,7 +46,9 @@ Cmd::~Cmd()
 int Cmd::run(const QString &cmd_str, int est_duration)
 {
     this->est_duration = est_duration;
-    if (proc->state() != QProcess::NotRunning) return -1; // allow only one process at a time
+    if (proc->state() != QProcess::NotRunning) {
+        return -1; // allow only one process at a time
+    }
 
     counter = 0; // init time counter
     output = "";
@@ -63,33 +65,47 @@ int Cmd::run(const QString &cmd_str, int est_duration)
     connect(proc, static_cast<void (QProcess::*)(int)>(&QProcess::finished), &loop, &QEventLoop::quit);
     connect(proc, &QProcess::readyReadStandardOutput, this, &Cmd::onStdoutAvailable);
     loop.exec();
-    emit finished();
-    return proc->exitCode();
+
+    qDebug() << "running cmd:" << proc->arguments().at(1);
+
+    emit finished(proc->exitCode(), proc->exitStatus());
+    if (proc->exitCode() != 0) {
+        qDebug() << "exit code:" << proc->exitCode();
+        return proc->exitCode();
+    }
+    if (proc->exitStatus() != 0) {
+        qDebug() << "exit status:" << proc->exitStatus();
+        return proc->exitStatus();
+    }
+    return 0;
 }
 
 // kill process, return true for success
 bool Cmd::kill()
 {
+    qDebug() << "kill cmd called";
     if (!this->isRunning()) {
         return true; // returns true because process is not running
     }
-    qDebug() << "killing process" << proc->pid();
+    qDebug() << "killing parent process:" << proc->pid();
+    system("kill -KILL -P " + proc->pid());
     proc->kill();
     proc->deleteLater();
-    emit finished();
+    emit finished(proc->exitCode(), proc->exitStatus());
     return (!this->isRunning());
 }
 
 // terminate process, return true for success
 bool Cmd::terminate()
 {
+    qDebug() << "terminate cmd called";
     if (!this->isRunning()) {
         return true; // returns true because process is not running
     }
-    qDebug() << "terminating process" << proc->pid();
+    qDebug() << "terminating parent process:" << proc->pid();
+    system("kill -TERM -P " + proc->pid());
     proc->terminate();
-    proc->deleteLater();
-    emit finished();
+    emit finished(proc->exitCode(), proc->exitStatus());
     return (!this->isRunning());
 }
 
@@ -129,7 +145,9 @@ QString Cmd::getOutput(const QString &cmd_str)
 void Cmd::onStdoutAvailable()
 {
     QByteArray line_out = proc->readAllStandardOutput();
-    if (line_out != "") emit outputAvailable(line_out);
+    if (line_out != "") {
+        emit outputAvailable(line_out);
+    }
     this->output += line_out;
 }
 

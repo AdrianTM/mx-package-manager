@@ -45,7 +45,7 @@ signals:
     void outputAvailable(const QString &output);
     void runTime(int, int); // runtime counter with estimated time
     void started();
-    void finished();
+    void finished(int exitCode, QProcess::ExitStatus exitStatus);
 
 public slots:
     void pause();

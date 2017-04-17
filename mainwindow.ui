@@ -499,7 +499,7 @@
           <item>
            <widget class="QCheckBox" name="checkHideLibs">
             <property name="text">
-             <string>Hide lib and -dev packages</string>
+             <string>Hide library and developer packages</string>
             </property>
             <property name="checked">
              <bool>true</bool>
