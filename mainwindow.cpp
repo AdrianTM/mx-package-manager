@@ -453,12 +453,13 @@ void MainWindow::displayPackages(bool force_refresh)
         candidate = hashCandidate[app_name];
         VersionNumber repocandidate(app_ver); // candidate from the selected repo, might be different than the one from Stable
 
+        (*it)->setIcon(1, QIcon()); // reset update icon
         if (installed.toString() == "(none)") {
-            for (int i = 0; i < ui->treeOther->columnCount(); ++i) {
+            for (int i = 0; i < ui->treeOther->columnCount(); ++i) {                
                 (*it)->setToolTip(i, tr("Version ") + candidate.toString() + tr(" in stable repo"));
             }
             (*it)->setText(5, "not installed");
-        } else if (installed.toString() == "") {
+        } else if (installed.toString() == "") {            
             for (int i = 0; i < ui->treeOther->columnCount(); ++i) {
                (*it)->setToolTip(i, tr("Not available in stable repo"));
             }
@@ -635,13 +636,6 @@ void MainWindow::installSelected()
 {
     QString names = change_list.join(" ");
 
-    // build a list of items to pass for refresh
-    QTreeWidgetItemIterator it(ui->treeOther, QTreeWidgetItemIterator::Checked);
-    QList<QTreeWidgetItem *> items;
-    while (*it) {
-        items << *it;
-        ++it;
-    }
     // change sources as needed
     if(ui->radioMXtest->isChecked()) {
         cmd->run("echo deb http://main.mepis-deb.org/mx/testrepo/ mx15 test>>/etc/apt/sources.list.d/mxpm-temp.list");
@@ -1373,5 +1367,5 @@ void MainWindow::on_buttonUpgradeAll_clicked()
 
     install(names);
     clearCache();
-    displayPackages();
+    buildPackageLists();
 }
