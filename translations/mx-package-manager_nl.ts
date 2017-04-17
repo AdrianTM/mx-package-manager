@@ -6,9 +6,9 @@
     <message>
         <location filename="../mainwindow.ui" line="20"/>
         <location filename="../mainwindow.cpp" line="69"/>
-        <location filename="../mainwindow.cpp" line="1100"/>
-        <location filename="../mainwindow.cpp" line="1107"/>
-        <location filename="../mainwindow.cpp" line="1115"/>
+        <location filename="../mainwindow.cpp" line="1104"/>
+        <location filename="../mainwindow.cpp" line="1111"/>
+        <location filename="../mainwindow.cpp" line="1119"/>
         <source>MX Package Manager</source>
         <translation type="unfinished"></translation>
     </message>
@@ -44,19 +44,19 @@
     </message>
     <message>
         <location filename="../mainwindow.ui" line="150"/>
-        <location filename="../mainwindow.cpp" line="1201"/>
+        <location filename="../mainwindow.cpp" line="1205"/>
         <source>Stable Repo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="160"/>
-        <location filename="../mainwindow.cpp" line="1200"/>
+        <location filename="../mainwindow.cpp" line="1204"/>
         <source>MX Test Repo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="170"/>
-        <location filename="../mainwindow.cpp" line="1199"/>
+        <location filename="../mainwindow.cpp" line="1203"/>
         <source>Debian Backports Repo</source>
         <translation type="unfinished"></translation>
     </message>
@@ -113,25 +113,25 @@
     <message>
         <location filename="../mainwindow.ui" line="261"/>
         <location filename="../mainwindow.ui" line="265"/>
-        <location filename="../mainwindow.cpp" line="1241"/>
+        <location filename="../mainwindow.cpp" line="1245"/>
         <source>All packages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="270"/>
-        <location filename="../mainwindow.cpp" line="1254"/>
+        <location filename="../mainwindow.cpp" line="1258"/>
         <source>Installed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="275"/>
-        <location filename="../mainwindow.cpp" line="1252"/>
+        <location filename="../mainwindow.cpp" line="1256"/>
         <source>Upgradable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="280"/>
-        <location filename="../mainwindow.cpp" line="1256"/>
+        <location filename="../mainwindow.cpp" line="1260"/>
         <source>Not installed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -212,35 +212,35 @@
     </message>
     <message>
         <location filename="../mainwindow.ui" line="630"/>
-        <location filename="../mainwindow.cpp" line="1148"/>
-        <location filename="../mainwindow.cpp" line="1299"/>
+        <location filename="../mainwindow.cpp" line="1152"/>
+        <location filename="../mainwindow.cpp" line="1303"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1099"/>
+        <location filename="../mainwindow.cpp" line="1103"/>
         <source>About MX Package Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1100"/>
+        <location filename="../mainwindow.cpp" line="1104"/>
         <source>Version: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1101"/>
+        <location filename="../mainwindow.cpp" line="1105"/>
         <source>Package Manager for MX Linux</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1103"/>
+        <location filename="../mainwindow.cpp" line="1107"/>
         <source>Copyright (c) MX Linux</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="284"/>
-        <location filename="../mainwindow.cpp" line="1105"/>
-        <location filename="../mainwindow.cpp" line="1202"/>
+        <location filename="../mainwindow.cpp" line="1109"/>
+        <location filename="../mainwindow.cpp" line="1206"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -341,7 +341,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1198"/>
+        <location filename="../mainwindow.cpp" line="1202"/>
         <source>Plese select repo to load</source>
         <translation type="unfinished"></translation>
     </message>
@@ -365,38 +365,38 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="771"/>
+        <location filename="../mainwindow.cpp" line="775"/>
         <source>Reading downloaded file...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="971"/>
+        <location filename="../mainwindow.cpp" line="975"/>
         <source>Packages to be installed: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1008"/>
+        <location filename="../mainwindow.cpp" line="1012"/>
         <source>Package info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1104"/>
-        <location filename="../mainwindow.cpp" line="1107"/>
+        <location filename="../mainwindow.cpp" line="1108"/>
+        <location filename="../mainwindow.cpp" line="1111"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1146"/>
+        <location filename="../mainwindow.cpp" line="1150"/>
         <source>Reinstall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1197"/>
+        <location filename="../mainwindow.cpp" line="1201"/>
         <source>Repo Selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1297"/>
+        <location filename="../mainwindow.cpp" line="1301"/>
         <source>Upgrade</source>
         <translation type="unfinished"></translation>
     </message>

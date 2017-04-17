@@ -704,7 +704,11 @@ bool MainWindow::downloadPackageList(bool force_download)
                 }
             }
             progress->show();
-            stable_raw = cmd->getOutput("LC_ALL=en_US.UTF-8 apt-cache dumpavail");
+            if (cmd->run("LC_ALL=en_US.UTF-8 apt-cache dumpavail") == 0) {
+                stable_raw = cmd->getOutput();
+            } else {
+                return false;
+            }
         }
     } else if (ui->radioMXtest->isChecked())  {
         if (!QFile(tmp_dir + "/mx15Packages").exists() || force_download) {
