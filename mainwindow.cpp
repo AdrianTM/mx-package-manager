@@ -649,9 +649,9 @@ void MainWindow::installPopularApps()
         QMessageBox::critical(this, tr("Error"), tr("Internet is not available, won't be able to download the list of packages"));
         return;
     }
-//    if (!updated_once) {
-//        update();
-//    }
+    if (!updated_once) {
+        update();
+    }
 
     // make a list of apps to be installed together
     QTreeWidgetItemIterator it(ui->treePopularApps);
@@ -703,16 +703,16 @@ void MainWindow::installSelected()
         if (system("cat /etc/apt/sources.list.d/*.list |grep -q mx16") == 0) {
             cmd->run("echo deb http://main.mepis-deb.org/mx/testrepo/ mx16 test>>/etc/apt/sources.list.d/mxpm-temp.list");
         }
-        //update();
+        update();
     } else if (ui->radioBackports->isChecked()) {
         cmd->run("echo deb http://ftp.debian.org/debian jessie-backports main contrib non-free>/etc/apt/sources.list.d/mxpm-temp.list");
-        //update();
+        update();
     }
     progress->hide();
     install(names);
     if (ui->radioMXtest->isChecked() || ui->radioBackports->isChecked()) {
         cmd->run("rm -f /etc/apt/sources.list.d/mxpm-temp.list");
-        //update();
+        update();
     }
     change_list.clear();
     clearCache();
