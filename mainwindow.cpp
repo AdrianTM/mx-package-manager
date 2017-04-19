@@ -94,7 +94,8 @@ void MainWindow::uninstall(const QString &names)
     this->hide();
     lock_file->unlock();
     qDebug() << "uninstall list: " << names;
-    cmd->run("x-terminal-emulator -e apt-get remove " + names);
+    QString title = tr("Uninstalling packages...");
+    cmd->run("x-terminal-emulator -T '" + title + "' -e apt-get remove " + names);
     lock_file->lock();
     refreshPopularApps();
     clearCache();
@@ -455,11 +456,11 @@ void MainWindow::displayPackages(bool force_refresh)
 
         (*it)->setIcon(1, QIcon()); // reset update icon
         if (installed.toString() == "(none)") {
-            for (int i = 0; i < ui->treeOther->columnCount(); ++i) {                
+            for (int i = 0; i < ui->treeOther->columnCount(); ++i) {
                 (*it)->setToolTip(i, tr("Version ") + candidate.toString() + tr(" in stable repo"));
             }
             (*it)->setText(5, "not installed");
-        } else if (installed.toString() == "") {            
+        } else if (installed.toString() == "") {
             for (int i = 0; i < ui->treeOther->columnCount(); ++i) {
                (*it)->setToolTip(i, tr("Not available in stable repo"));
             }
@@ -485,6 +486,7 @@ void MainWindow::displayPackages(bool force_refresh)
         }
         ++it;
     }
+
     // cache trees for reuse
     if(ui->radioMXtest->isChecked()) {
         copyTree(ui->treeOther, tree_mx_test);
@@ -562,12 +564,46 @@ void MainWindow::install(const QString &names)
     }
     this->hide();
     lock_file->unlock();
-    cmd->run("x-terminal-emulator -e apt-get install --reinstall " + names);
+    QString title = tr("Installing packages...");
+    cmd->run("x-terminal-emulator -T '" +  title + "' -e apt-get install --reinstall " + names);
     lock_file->lock();
     this->show();
 }
 
-// install named app, return 'false' if any steps fails
+// install a list of application and run postprocess for each of them.
+void MainWindow::installBatch(const QStringList &name_list)
+{
+    QString postinstall;
+    QString install_names;
+
+    // load all the
+    foreach (const QString name, name_list) {
+        foreach (const QStringList &list, popular_apps) {
+            if (list.at(1) == name) {
+                postinstall += list.at(6) + "\n";
+                install_names += list.at(7) + " ";
+            }
+        }
+    }
+    setConnections();
+
+    if (install_names != "") {
+        progress->hide();
+        this->hide();
+        progress->setLabelText(tr("Installing..."));
+        install(install_names);
+        this->show();
+        progress->show();
+    }
+    setConnections();
+    progress->setLabelText(tr("Post-processing..."));
+    lock_file->unlock();
+    cmd->run(postinstall);
+    lock_file->lock();
+    progress->hide();
+}
+
+// install named app
 void MainWindow::installPopularApp(const QString &name)
 {
     QString preinstall;
@@ -603,22 +639,46 @@ void MainWindow::installPopularApp(const QString &name)
     progress->hide();
 }
 
+
+// Process checked items to install
 void MainWindow::installPopularApps()
 {
+    QStringList batch_names;
+
     if (!checkOnline()) {
         QMessageBox::critical(this, tr("Error"), tr("Internet is not available, won't be able to download the list of packages"));
         return;
     }
-    if (!updated_once) {
-        update();
-    }
+//    if (!updated_once) {
+//        update();
+//    }
+
+    // make a list of apps to be installed together
     QTreeWidgetItemIterator it(ui->treePopularApps);
-    ui->treePopularApps->clearSelection(); //deselect all items
     while (*it) {
         if ((*it)->checkState(1) == Qt::Checked) {
-            installPopularApp((*it)->text(2));
+            QString name = (*it)->text(2);
+            foreach (const QStringList &list, popular_apps) {
+                if (list.at(1) == name) {
+                    QString preinstall = list.at(5);
+                    if (preinstall == "") {  // add to batch processing if there is not preinstall command
+                        batch_names << name;
+                        (*it)->setCheckState(1, Qt::Unchecked);
+                    }
+                }
+            }
         }
         ++it;
+    }
+    installBatch(batch_names);
+
+    // install the rest of the apps
+    QTreeWidgetItemIterator iter(ui->treePopularApps);
+    while (*iter) {
+        if ((*iter)->checkState(1) == Qt::Checked) {
+            installPopularApp((*iter)->text(2));
+        }
+        ++iter;
     }
     setCursor(QCursor(Qt::ArrowCursor));
     if (QMessageBox::information(this, tr("Done"),
@@ -643,16 +703,16 @@ void MainWindow::installSelected()
         if (system("cat /etc/apt/sources.list.d/*.list |grep -q mx16") == 0) {
             cmd->run("echo deb http://main.mepis-deb.org/mx/testrepo/ mx16 test>>/etc/apt/sources.list.d/mxpm-temp.list");
         }
-        update();
+        //update();
     } else if (ui->radioBackports->isChecked()) {
         cmd->run("echo deb http://ftp.debian.org/debian jessie-backports main contrib non-free>/etc/apt/sources.list.d/mxpm-temp.list");
-        update();
+        //update();
     }
     progress->hide();
     install(names);
     if (ui->radioMXtest->isChecked() || ui->radioBackports->isChecked()) {
         cmd->run("rm -f /etc/apt/sources.list.d/mxpm-temp.list");
-        update();
+        //update();
     }
     change_list.clear();
     clearCache();
@@ -764,7 +824,7 @@ bool MainWindow::readPackageList(bool force_download)
     QStringList description_list;
 
     progCancel->setDisabled(true);
-    // don't process if the lists are populated
+    // don't process if the lists are populate
     if (!(stable_list.isEmpty() || mx_list.isEmpty() || backports_list.isEmpty() || force_download)) {
         return true;
     }

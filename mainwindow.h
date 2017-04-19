@@ -71,7 +71,8 @@ public:
     void downloadImage(const QUrl &url);
     void ifDownloadFailed();
     void install(const QString &names);
-    void installPopularApp(const QString &name);
+    void installBatch(const QStringList &name_list);
+    void installPopularApp(const QString &name);    
     void installPopularApps();
     void installSelected();
     void loadPmFiles();
