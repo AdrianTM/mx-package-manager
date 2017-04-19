@@ -565,7 +565,12 @@ void MainWindow::install(const QString &names)
     this->hide();
     lock_file->unlock();
     QString title = tr("Installing packages...");
-    cmd->run("x-terminal-emulator -T '" +  title + "' -e apt-get install --reinstall " + names);
+    if (ui->radioBackports->isChecked()) {
+        cmd->run("x-terminal-emulator -T '" +  title + "' -e apt-get install -t jessie-backports --reinstall " + names);
+    } else {
+        cmd->run("x-terminal-emulator -T '" +  title + "' -e apt-get install --reinstall " + names);
+    }
+
     lock_file->lock();
     this->show();
 }
