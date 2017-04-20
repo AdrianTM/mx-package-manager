@@ -18,26 +18,26 @@ Changes:
  .
    * initial release
 Checksums-Sha1:
- 8ad237b76c1449f7af27b360acb27591c1bc7a0e 1186 mx-package-manager_0.17.4.dsc
- c4f166ce1f36142a292a2d2a40d7fcc7e44e8d0e 46424 mx-package-manager_0.17.4.tar.xz
- dc8d2abd71ecefd4c8df7450cfc6747e9fbdd56e 80980 mx-package-manager_0.17.4_amd64.deb
+ 3eb5984ada4aaf095a82b8f2e47e0557189f185f 1186 mx-package-manager_0.17.4.dsc
+ 7b2ac733220c2575e5f9af60344b5614edf5fd5c 46428 mx-package-manager_0.17.4.tar.xz
+ 807af4ca648ee2e7f81832ef175498752a558d12 81212 mx-package-manager_0.17.4_amd64.deb
 Checksums-Sha256:
- a54b352e274972e7af2c9441105ea14baac5adfc8624fed886dea6b00aa36474 1186 mx-package-manager_0.17.4.dsc
- 0ef4dfa2423c470e564d183e02319afeafaa7c4ad5141efed4986f963bd92d18 46424 mx-package-manager_0.17.4.tar.xz
- 46584b03037c1a25166e9af4b14236721b228dfe23ca8563af83f2856952240c 80980 mx-package-manager_0.17.4_amd64.deb
+ 1e36324d596eae1477ab3411345116aae743399d02bc99320932c920773b77a7 1186 mx-package-manager_0.17.4.dsc
+ 9e09895d4210e07d02a7f9658a897cc98f91e273dd921e33a2d33f8c657d6f15 46428 mx-package-manager_0.17.4.tar.xz
+ 977ef5ce3d0a576f0c125e4994a7b05f230f097cc5dddc19dcf736fd8c95aa5b 81212 mx-package-manager_0.17.4_amd64.deb
 Files:
- 0f1e3c7ab03bec4954ee23777ed5d1d2 1186 admin optional mx-package-manager_0.17.4.dsc
- ad9d3497261989a4768ebec0d2993df5 46424 admin optional mx-package-manager_0.17.4.tar.xz
- 56e06f0835e7b86ff77ebb063f8c80e1 80980 admin optional mx-package-manager_0.17.4_amd64.deb
+ eec945f0b6287657d101aa0523593d7d 1186 admin optional mx-package-manager_0.17.4.dsc
+ c04d92cb6d351192c9af8abf884164df 46428 admin optional mx-package-manager_0.17.4.tar.xz
+ 374872bbd540381c8ed5ee6daf2946ae 81212 admin optional mx-package-manager_0.17.4_amd64.deb
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQEcBAEBAgAGBQJY+NZtAAoJEHCTjHgGee6Y/GIH/ikME4Dxb7toJUiopjvgz01A
-eYeCO3bmbF7yPne5IX4ZWWHT4xpkhhIwBsQJnUMi8Q4oTqJgP2TLZwvNDxkcW4kn
-IymjXBMw3Wc2/sQbJfK8fMbT+BvGIWI6osxZQLgU678K42sjYn7aw94Tqc1Ob0gn
-FqpxrGBjDKpRHYbPKjOHtuCmX4ZMABJ0AyBaTk9JK0srYtcWnVFkgrVO987dIanU
-gwrHPY5irPIho/nk/xvVl6a1D2jOk/izjlzVJKPlPdMHhgGVO1F/TSULga+QC75A
-NZBMoi+WcNGv2KmT0Pxd9fDSqzyWxX78BtPz5oTg2xfXyT6HqsrGLhmOrlQbm4A=
-=0MG9
+iQEcBAEBAgAGBQJY+NdWAAoJEHCTjHgGee6YtUEH/jekuwauI5WsBO4dm1IQ69jF
+SBmmoiozko1oEMkg2GXTEoyPA/vQPcv+sRQwBaIbJVagh1ZPT77/wFNk90jNfTsb
+S+5ZpUtvWTMsxfdT7C5i8adbkNUr8dFhYCic98xaAa4tL0kbpW7zV12n3k0LJ5m+
+chzkeKD+30/yLqsGT11qMU/su1zjFR16fL0Ay77Kmn8RCqgJNDuHu67npwIvKzdP
+TQnVDUl/EgAlhev6UX7HY5lUmUPH/KQ7S93a4ss7XiAIQauio9caJN8vkAe9V9iK
+xE4wYBbB8ZvtaKfwErPyWIDTz7SfH0U21V6RlKNJ4fo/Vnqa6b7WsCum4EQ4VA4=
+=MeoQ
 -----END PGP SIGNATURE-----

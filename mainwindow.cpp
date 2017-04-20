@@ -319,7 +319,7 @@ void MainWindow::displayPopularApps()
             // topLevelItem look
             QFont font;
             font.setBold(true);
-            topLevelItem->setForeground(2, QBrush(Qt::darkGreen));
+            //topLevelItem->setForeground(2, QBrush(Qt::darkGreen));
             topLevelItem->setFont(2, font);
             topLevelItem->setIcon(0, QIcon::fromTheme("folder-green"));
         } else {

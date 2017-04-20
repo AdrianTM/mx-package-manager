@@ -13,20 +13,20 @@ Build-Depends: qt5-qmake, debhelper (>= 7.0.50~)
 Package-List:
  mx-package-manager deb admin optional arch=any
 Checksums-Sha1:
- c4f166ce1f36142a292a2d2a40d7fcc7e44e8d0e 46424 mx-package-manager_0.17.4.tar.xz
+ 7b2ac733220c2575e5f9af60344b5614edf5fd5c 46428 mx-package-manager_0.17.4.tar.xz
 Checksums-Sha256:
- 0ef4dfa2423c470e564d183e02319afeafaa7c4ad5141efed4986f963bd92d18 46424 mx-package-manager_0.17.4.tar.xz
+ 9e09895d4210e07d02a7f9658a897cc98f91e273dd921e33a2d33f8c657d6f15 46428 mx-package-manager_0.17.4.tar.xz
 Files:
- ad9d3497261989a4768ebec0d2993df5 46424 mx-package-manager_0.17.4.tar.xz
+ c04d92cb6d351192c9af8abf884164df 46428 mx-package-manager_0.17.4.tar.xz
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQEcBAEBAgAGBQJY+NZFAAoJEHCTjHgGee6Y21UH/2S83S5EBl79Dp+mnwcE7DJE
-s84Uvsgjh6JT6RM9+Wg8ctb+6/EFI1dLXrbhMrilPBrJS/8Zg2Ibfh8GpgrAiUOd
-jePWUkSGw6l7Yd6WQIkA30KkjlAyf260J2bNPvusc4IJXBNSb0wmTOgXo5+5J1Uh
-1VFhPOlggBE64Qf4Memt2Sq+YyQkyDcVbeFWtwg8a+LfbIM0Cl8Tt4eN8DNSb0cR
-VlrvquHKaOBgBADnlA6F8bX8Ir2zvVoVVAqsO1GvBN1V4bUNZrh/KAM+25dQmQIL
-BRrfTuxZb2L5/jsxy9d2HiUif/FEPnXSI7JVY0OTA1lQyFBT71MGXsUEWir2GO8=
-=FdHY
+iQEcBAEBAgAGBQJY+Nc9AAoJEHCTjHgGee6YwLcIAIbT5Voa9RtVzlSpx7/0OgV1
+9OZvdX7tBYADcUFplKBvrEGeRQLUfeLz2iBZ/fj6REfZYJLd5ogAi0IxDF6s3K3E
+kEig8jfwvha25rlekLLlYDPhSXTdVR7kypy1GaSmwL3ByIgwsj9rtGQx6CDYMMmd
+/Plh0V+wzQasi26qHvBkOGV7NpSjJijkHwCfvt3Ty6h5bWyqIa/mF8LN4a+Dqcr/
+0kxtR445TGsAzFLNPcTKKGfaII6CUKTE3nHECMnWc/ZJ9/o63R1FlXlZWWPLmnwc
+HkF6Xc9Gs1tCfZC7SVuYf4ehhA8syvO8w4tApImssVcikw/C8AQ9Iv6xU3NI098=
+=xUL7
 -----END PGP SIGNATURE-----
