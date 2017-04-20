@@ -1172,7 +1172,7 @@ void MainWindow::on_buttonAbout_clicked()
                        tr("Copyright (c) MX Linux") + "<br /><br /></p>");
     msgBox.addButton(tr("License"), QMessageBox::AcceptRole);
     msgBox.addButton(tr("Cancel"), QMessageBox::NoRole);
-    if (msgBox.exec() == QMessageBox::YesRole) {
+    if (msgBox.exec() == QMessageBox::AcceptRole) {
         system("mx-viewer file:///usr/share/doc/mx-package-manager/license.html '" + tr("MX Package Manager").toUtf8() + " " + tr("License").toUtf8() + "'");
     }
     this->show();

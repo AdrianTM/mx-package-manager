@@ -18,20 +18,20 @@ Changes:
  .
    * initial release
 Checksums-Sha1:
- 1412029b01319a34e1ca54ba4aaec12990d51711 82252 mx-package-manager_0.17.4_i386.deb
+ 771d2eeb7b757f88c95babfea9563317db3f11d4 82528 mx-package-manager_0.17.4_i386.deb
 Checksums-Sha256:
- 99c6be00d9551dae15d2740a8edaa085645d04aa7172a12de35f9bcd92462cd4 82252 mx-package-manager_0.17.4_i386.deb
+ 01f97755a07d665dd054c30e30add92f055ebe406f30c9479f485fbf4d092bff 82528 mx-package-manager_0.17.4_i386.deb
 Files:
- c3da68ae8851ede436b877a1e2ea3b3e 82252 admin optional mx-package-manager_0.17.4_i386.deb
+ b502c554e071e791abfb534905abbd01 82528 admin optional mx-package-manager_0.17.4_i386.deb
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQEcBAEBAgAGBQJY+MG5AAoJEHCTjHgGee6Y/csH/ipgmB5YOcypt3lrGoD3/rPk
-eviisZ+bmcjdFFooUvRsTSNLRGF+bMl7XHc38uLKAbjIWsVTaLRMl8i7voZUZo1Q
-Jj/mF++9K5d20sSnVLltSDsJTThlhIZxzPjkdy6eJTDLEPHO5hhQhDZSzPHiuUu8
-Ebi9ptrU7o8i4X5tCnr3u91wlGdrfGPcLB3b4bL6aNiPB9xHp/KjSkZWGv+5/QwD
-IfPj7bOJheVde3csOoqGBHxAm9iDLpUELLZdWwcTRAFhl/JslDFnKgK2V8lVsG4d
-uHCsNKnAt+Lm3b9L6hrgmlUpnKYgPy/sGJjezb1T/hH+hW/NylLySCZRXAygzZk=
-=sgt5
+iQEcBAEBAgAGBQJY+NbBAAoJEHCTjHgGee6YU3EIAMeEqbZq3mPpq0l1OYQOUCdU
+/+RS0kSq78jIixyJsKCzm1XUcW2EXhnuXuGAOPoeH51/VHUBR4d/I7NBUPg8otpJ
+KUezl4p4EUtklnBQduFsyuTUZeUrMdVbiEo5qCI9Eqdy3b2rA8AoyYIpIh8pussU
+TMhApYLCDj8VS+ONsrCq+sqjNLjUVutO9jUIf1h9vPQX5LCnJ+Fmu6lqLjmKe8pa
+23k7PqnscJzxCm+EZw+7DlorVRGv1YDYeI6N2e0dxhqfbe8IdtLClPDZ2n2TSqcM
+uv5yYjb9XXlFXoWqb0enao2lNSBWG0SGArxefVDXTdn+plwKO5Fi7hDMGLCKN20=
+=/ATM
 -----END PGP SIGNATURE-----
